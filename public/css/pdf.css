@@ -1,0 +1,3 @@
+curl -H 'Authentication: Token <your token>' \
+-F 'file=@invoice_1.html' \
+'https://htmlpdfapi.com/api/v1/pdf' > invoice_1.pdf
