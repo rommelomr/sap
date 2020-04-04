@@ -164,8 +164,8 @@ class FichasAcademicasController extends Controller
             $query->with('fichaEconomica');
         }   ,'etapa'])->find($id);
         $auth = Auth::user();
-        if($auth->id_nivel !== 1){
-            if($ficha->id_asesor !== $auth->asesor->id){
+        if($auth->id_nivel != 1){
+            if($ficha->id_asesor != $auth->asesor->id){
                 return redirect()->route('fichas_academicas')->with(['messages'=>['Usted no tiene acceso a esta ficha']]);
             }
         }
@@ -177,7 +177,7 @@ class FichasAcademicasController extends Controller
         $etapas = Etapa::all();
 
         $user = User::with('asesor')->find(Auth::user()->id);
-        if($user->id_nivel === 1){
+        if($user->id_nivel == 1){
             $fichas = FichaAcademica::with('cotizacion')->paginate(10);
 
         }else{

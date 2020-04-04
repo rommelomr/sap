@@ -4,7 +4,7 @@
   }  
 </style>
   <!-- Modal Structure -->
-  <div id="modal_menu" class="modal hide-on-large-only">
+  <div id="modal_menu" class="modal">
     <div class="modal-content">
       <center>
         
@@ -69,7 +69,7 @@
             </div>
           </a>
         </div>
-        <div class="col s3">
+        <div class="col s3" hidden>
           <a href="#">
             <div class="card-panel orange lighten-3">
               <center>

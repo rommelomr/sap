@@ -99,8 +99,10 @@ class RegisterController extends Controller
             'nivel'     => ['required','exists:niveles,id'],
 
             //asesor
-            'profesion' => ['bail',Rule::requiredIf($this->esAsesor($data)),function()use(&$data){
-                $carrera = Carrera::firstOrCreate(['nombre'=>$data['profesion']]);
+            'profesion' => ['bail',Rule::requiredIf($this->esAsesor($data)),function()use($data){
+                if($data['profesion'] != null){
+                    $carrera = Carrera::firstOrCreate(['nombre'=>$data['profesion']]);
+                }
             }],
             'sexo'       => [ Rule::in([1,2]),Rule::requiredIf($this->esAsesor($data))],
         ]);

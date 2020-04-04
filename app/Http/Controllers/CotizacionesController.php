@@ -95,7 +95,7 @@ class CotizacionesController extends Controller
 
     public static function validarPermisosModificacion($cotizacion,$request){
         $auth = Auth::user();
-        return !($auth->id_nivel !== 1) && ($cotizacion->precio_total !== $request->edit_precio || $cotizacion->id_medio !== $request->edit_medio);
+        return !($auth->id_nivel != 1) && ($cotizacion->precio_total != $request->edit_precio || $cotizacion->id_medio != $request->edit_medio);
     }
     public static function modificarCotizacion(Request $request){
         session()->flash('tab',2);
@@ -318,7 +318,7 @@ class CotizacionesController extends Controller
             $query->with(['carrera','facultad']);
         },'cotizacionPosgrado','modalidad','curso','medio','ficha'])->orderBy('created_at','DESC'); 
         $auth = Auth::user();
-        if($auth->id_nivel === 1){
+        if($auth->id_nivel == 1){
             $cotizaciones = $cotizaciones->paginate(10);
         }else{
             $cotizaciones = $cotizaciones->whereHas('ficha',function($query) use ($auth){
