@@ -28,8 +28,8 @@ class Cotizacion extends Model
     public function universidad(){
         return $this->belongsTo('App\Universidad','id_universidad');
     }
-    public function curso(){
-        return $this->belongsTo('App\Curso','id_curso');
+    public function tipoCotizacion(){
+        return $this->belongsTo('App\TipoCotizacion','id_tipo_cotizacion');
     }
     
     public function nivelAcademico(){
@@ -58,6 +58,9 @@ class Cotizacion extends Model
     }
     public function fichaEconomica(){
         return $this->hasOne('App\FichaEconomica','id_cotizacion');
+    }
+    public function posgrado(){
+        return $this->belongsTo('App\Posgrado','id_posgrado');
     }
     
     

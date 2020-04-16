@@ -11,7 +11,7 @@
         <h4>Menú principal</h4>
       </center>
       <div class="row">
-        @if(\Auth::user()->id_nivel === 1)
+        @if(\Auth::user()->id_nivel == 1)
         <div class="col s3">
           <a href="{{route('/')}}">
             <div class="card-panel blue lighten-3">

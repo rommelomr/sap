@@ -9,9 +9,6 @@ use Foolz\SphinxQL\Drivers\Mysqli\Connection;
 class Carrera extends Model
 {
     protected $table='carreras';
-    protected $fillable = [
-        'nombre'
-    ];
         public function getRouteKeyName()
     {
         return 'id';

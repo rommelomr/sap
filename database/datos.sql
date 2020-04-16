@@ -1,9 +1,4 @@
 insert into niveles (nombre) values ('Administrador') , ('Asesor');
-insert into carreras (nombre) values 
-	('Informatica'), 
-	('Telecomunicaciones'), 
-	('Electronica'), 
-	('Mecanica Automotriz');
 
 INSERT INTO `personas` (`id`, `nombre`, `apellido`, `cedula`, `telefono`, `celular`, `direccion`, `email`, `email_verified_at`, `estado`, `created_at`, `updated_at`) VALUES
 (1, 'Alennys', 'Palma', 12345, 1234, 4321, 'Direccion ejemplo', 'alennyspalma@gmail.com', NULL, '1', NULL, NULL),
@@ -41,29 +36,36 @@ INSERT INTO `clientes` (`id`, `id_persona`, `carnet`, `created_at`, `updated_at`
 (4, 5, 'cu5615', '2020-01-22 06:54:32', '2020-01-22 06:54:32'),
 (5, 6, 'cu4996', '2020-01-22 06:54:33', '2020-01-22 06:54:33');
 
-INSERT INTO `asesores` (`id`, `id_usuario`, `id_carrera`, `sexo`, `created_at`, `updated_at`) VALUES
-(1, 7, 1, '1', '2020-01-22 06:55:00', '2020-01-22 06:55:00'),
-(2, 8, 2, '1', '2020-01-22 06:55:09', '2020-01-22 06:55:09'),
-(3, 9, 3, '2', '2020-01-22 06:55:19', '2020-01-22 06:55:19'),
-(4, 10, 4, '2', '2020-01-22 06:55:29', '2020-01-22 06:55:29');
-
 INSERT INTO `universidades` (nombre) VALUES
-('Universidad Mayor de San Fco. Xavier (USFX) - (Chuquisaca)'),
-('Universidad Autónoma Tomás Frías (AUTF) - (Potosi)'),
-('Universidad Mayor de San Simón (UMSS) - (Cochabamba)'),
-('Universidad Mayor de San Andrés (UMSA) - (La paz)'),
-('Universidad Salesiana de Bolivia (USALESIANA) - (Bolivia)'),
-('Universidad Técnica de ORURO (UTO) - (Oruro)'),
-('Universidad Autónoma Gabriel René Moreno (UAGRM) - (Santa Cruz)'),
-('Universidad Autónoma Juan Misael Saracho (UAJMS) - (Tarija)'),
-('Universidad A. del Beni José Ballivián (UABJB) - (Beni)'),
-('Universidad Andina Simón Bolívar (UASB) - (Chuquisaca)'),
-('Escuela Militar de Ingeniería (EMI) - (Cochabamba, La Paz)'),
-('Escuela Pública de El Alto (UPEA) - (El Alto)'),
-('Universidad Nacional del Siglo XX (UNSXX) - (Potosi)'),
-('Universidad Nacional del Oriente (UNO) - (Santa Cruz)'),
-('Universidad Nacional Ecológica Santa Cruz (UECOLOGICA) - (Santa Cruz)'),
-('Otros - (Chuquisaca)');
+('Universidad Mayor de San Francisco Xavier'),
+('Universidad Mayor de San Andrés'),
+('Universidad Pública de El Alto'),
+('Universidad Mayor de San Simón'),
+('Universidad Autónoma Gabriel Rene Moreno'),
+('Universidad Técnica de Oruro'),
+('Universidad Tomás Frías'),
+('Universidad Juan Misael Saracho'),
+('Universidad Autónoma de Beni "José Ballivián"'),
+('Universidad Nacional de Siglo XX'),
+('Universidad Amazónica de Pando'),
+('Escuela Militar de Ingeniería'),
+('Universidad Católica Boliviana "San Pablo" '),
+('Universidad Privada del Valle'),
+('Universidad de Aquino Bolivia - UDABOL'),
+('Universidad Nur'),
+('UPAL'),
+('Universidad La Salle'),
+('Universidad Loyola'),
+('Universidad Salesiana de Bolivia'),
+('Universidad San Francisco de Asís'),
+('UTB'),
+('Universidad Unión Bolivariana'),
+('Universidad Tecnológica Privada de Santa Cruz'),
+('Ucebol - Universidad Cristiana de Bolivia'),
+('Unikuljis'),
+('Universidad Evangélica Boliviana'),
+('Universidad Adventista de Bolivia'),
+('UNIOR');
 
 INSERT INTO `etapas` (nombre) VALUES
 ('Docente'),
@@ -71,10 +73,92 @@ INSERT INTO `etapas` (nombre) VALUES
 ('Tribunal');
 
 INSERT INTO `facultades` (nombre) VALUES
-('Ciencias Sociales y Humanísticas'),
-('Ciencias de la Salud'),
-('Ciencias Económicas y financieras'),
-('Ciencias Tecnológicas y Agrarias');
+
+('FACULTAD DE DERECHO, CIENCIAS SOCIALES Y POLÍTICAS'),
+('FACULTAD DE MEDICINA'),
+('FACULTAD DE ODONTOLOGÍA'),
+('FACULTAD DE CIENCIAS QUÍMICO - FARMACÉUTICAS Y BIOQUÍMICAS'),
+('FACULTAD DE CONTADURÍA PUBLICA Y CIENCIAS FINANCIERAS'),
+('FACULTAD DE CIENCIAS ECONÓMICAS Y EMPRESARIALES'),
+('FACULTAD DE TECNOLOGÍA'),
+('FACULTAD DE CIENCIAS AGRARIAS'),
+('FACULTAD INTEGRAL DEFENSORES DEL CHACO'),
+('FACULTAD DE HUMANIDADES Y CIENCIAS DE LA EDUCACIÓN'),
+('FACULTAD TÉCNICA'),
+('FACULTAD DE CIENCIAS DE ENFERMERÍA Y OBSTETRICIA'),
+('FACULTAD DE CIENCIAS Y TECNOLOGÍAS DE LA SALUD'),
+('FACULTAD DE ARQUITECTURA Y CIENCIAS DEL HÁBITAT'),
+('FACULTAD DE INGENIERÍA CIVIL'),
+('FACULTAD DE MECÁNICA');
+
+insert into carreras (id_facultad, nombre) values 
+(1, 'DERECHO'),
+(1, 'COMUNICACIÓN'),
+(1, 'SOCIOLOGÍA'),
+(2, 'MEDICINA'),
+(3, 'ODONTOLOGÍA'),
+(3, 'PRÓTESIS DENTAL'),
+(4, 'BIOQUÍMICA'),
+(4, 'QUÍMICA FARMACÉUTICA'),
+(4, 'BIOLOGÍA'),
+(5, 'CONTADURÍA PUBLICA'),
+(5, 'ADMINISTRACIÓN FINANCIERA'),
+(6, 'ECONOMÍA'),
+(6, 'ADMINISTRACIÓN DE EMPRESAS'),
+(6, 'INGENIERÍA COMERCIAL'),
+(6, 'GERENCIA Y ADMINISTRACIÓN PUBLICA'),
+(7, 'INGENIERÍA QUÍMICA'),
+(7, 'INGENIERÍA ALIMENTOS'),
+(7, 'INGENIERÍA INDUSTRIAL'),
+(7, 'INGENIERÍA AMBIENTAL'),
+(7, 'INGENIERÍA PETRÓLEO Y GAS NATURAL'),
+(7, 'INGENIERÍA DE SISTEMAS'),
+(7, 'INGENIERÍA TELECOMUNICACIONES'),
+(7, 'INGENIERÍA DE DISEÑO Y ANIMACIÓN DIGITAL'),
+(7, 'INGENIERÍA EN CIENCIAS DE LA COMPUTACIÓN'),
+(7, 'INGENIERÍA TECNOLOGÍAS DE LA INFORMACIÓN Y SEGURIDAD'),
+(7, 'INFORMÁTICA'),
+(8, 'AGRONOMÍA'),
+(8, 'INGENIERÍA AGRONÓMICA'),
+(8, 'DESARROLLO RURAL'),
+(8, 'INGENIERÍA AGROFORESTAL'),
+(9, 'INGENIERÍA ZOOTECNIA'),
+(9, 'MEDICINA VETERINARIA Y ZOOTECNIA'),
+(10, 'IDIOMAS'),
+(10, 'TURISMO'),
+(10, 'PEDAGOGÍA'),
+(10, 'PSICOLOGÍA'),
+(10, 'TRABAJO SOCIAL'),
+(10, 'GASTRONOMÍA'),
+(11, 'CONSTRUCCIÓN CIVIL'),
+(11, 'TOPOGRAFÍA'),
+(11, 'GEODESIA Y TOPOGRAFÍA'),
+(11, 'MECÁNICA AUTOMOTRIZ'),
+(11, 'MECÁNICA INDUSTRIAL'),
+(11, 'ELECTRICIDAD'),
+(11, 'ELECTRÓNICA'),
+(12, 'ENFERMERÍA'),
+(12, 'ENFERMERÍA OBSTETRIZ'),
+(12, 'AUXILIAR DE ENFERMERÍA'),
+(13, 'BIO-IMAGENOLOGIA'),
+(13, 'KINESIOLOGÍA Y FISIOTERAPIA'),
+(13, 'LABORATORIO CLÍNICO'),
+(13, 'NUTRICIÓN Y DIETÉTICA'),
+(14, 'ARQUITECTURA'),
+(14, 'DISEÑO INTERIORES'),
+(14, 'ARTE Y DISEÑO GRAFICO'),
+(15, 'INGENIERÍA CIVIL'),
+(16, 'INGENIERÍA MECÁNICA'),
+(16, 'INGENIERÍA ELÉCTRICA'),
+(16, 'INGENIERÍA ELECTRÓNICA'),
+(16, 'INGENIERÍA MECATRÓNICA'),
+(16, 'INGENIERÍA ELECTROMECÁNICA');
+
+INSERT INTO `asesores` (`id`, `id_usuario`, `id_carrera`, `sexo`, `created_at`, `updated_at`) VALUES
+(1, 7, 1, '1', '2020-01-22 06:55:00', '2020-01-22 06:55:00'),
+(2, 8, 2, '1', '2020-01-22 06:55:09', '2020-01-22 06:55:09'),
+(3, 9, 3, '2', '2020-01-22 06:55:19', '2020-01-22 06:55:19'),
+(4, 10, 4, '2', '2020-01-22 06:55:29', '2020-01-22 06:55:29');
 
 INSERT INTO `modalidades` (nombre) VALUES
 ('Proyecto de grado'),
@@ -95,7 +179,7 @@ INSERT INTO `medios` (nombre) VALUES
 ('Clientes Antiguos'),
 ('Television');
 
-INSERT INTO `cursos` (nombre) VALUES
+INSERT INTO `tipos_cotizacion` (nombre) VALUES
 ('Semestralizado'),
 ('Anualizado');
 
@@ -119,18 +203,20 @@ INSERT INTO `profesiones` (nombre) VALUES
 ('Traumatólogo'),
 ('Cirujano'),
 ('Asistente Contable');
+INSERT INTO `posgrados` (nombre) VALUES
+('Desarrollo web');
 
-INSERT INTO `cotizaciones` (id_profesion,created_at, updated_at, id_curso, id_nivel_academico, numero_cotizacion, id_cliente, id_universidad, id_modalidad, id_medio, tema, avance, observaciones, precio_total, validez) VALUES
-(1,'2020-01-01','2020-02-01',1,1,1,1, 1, 5, 1,'tema 6', 6, 'Observacion 6', 16, 10),
-(2,'2020-01-01','2020-02-01',2,6,2,2, 2, 6, 2,'tema 7', 7, 'Observacion 7', 17, 10),
-(3,'2020-01-01','2020-02-01',1,7,3,3, 3, 7, 3,'tema 8', 8, 'Observacion 8', 18, 10),
-(4,'2020-01-01','2020-02-01',2,8,4,4, 4, 8, 4,'tema 9', 1, 'Observacion 9', 19, 10),
-(5,'2020-01-01','2020-02-01',1,5,5,5, 5, 1, 5,'tema 10',2, 'Observacion 0', 10, 10),
-(6,'2020-01-01','2020-02-01',2,6,6,1, 6, 2, 1,'tema 6', 3, 'Observacion 6', 16, 10),
-(7,'2020-01-01','2020-02-01',1,7,7,2, 7, 3, 3,'tema 7', 4, 'Observacion 7', 17, 10),
-(1,'2020-01-01','2020-02-01',2,8,8,3, 8, 4, 4,'tema 8', 5, 'Observacion 8', 18, 10),
-(2,'2020-01-01','2020-02-01',1,1,8,4, 1, 5, 5,'tema 9', 6, 'Observacion 9', 19, 10),
-(3,'2020-01-01','2020-02-01',2,9,10,5,2, 6, 1,'tema 10',7, 'Observacion 0', 10, 10);
+INSERT INTO `cotizaciones` (id_posgrado, id_profesion,created_at, updated_at, id_tipo_cotizacion, id_nivel_academico, numero_cotizacion, id_cliente, id_universidad, id_modalidad, id_medio, tema, avance, observaciones, precio_total, validez) VALUES
+(1,1,'2020-01-01','2020-02-01',1,1,1,1, 1, 5, 1,'tema 6', 6, 'Observacion 6', 16, 10),
+(1,2,'2020-01-01','2020-02-01',2,6,2,2, 2, 6, 2,'tema 7', 7, 'Observacion 7', 17, 10),
+(1,3,'2020-01-01','2020-02-01',1,7,3,3, 3, 7, 3,'tema 8', 8, 'Observacion 8', 18, 10),
+(1,4,'2020-01-01','2020-02-01',2,8,4,4, 4, 8, 4,'tema 9', 1, 'Observacion 9', 19, 10),
+(1,5,'2020-01-01','2020-02-01',1,5,5,5, 5, 1, 5,'tema 10',2, 'Observacion 0', 10, 10),
+(1,6,'2020-01-01','2020-02-01',2,6,6,1, 6, 2, 1,'tema 6', 3, 'Observacion 6', 16, 10),
+(1,7,'2020-01-01','2020-02-01',1,7,7,2, 7, 3, 3,'tema 7', 4, 'Observacion 7', 17, 10),
+(1,1,'2020-01-01','2020-02-01',2,8,8,3, 8, 4, 4,'tema 8', 5, 'Observacion 8', 18, 10),
+(1,2,'2020-01-01','2020-02-01',1,1,8,4, 1, 5, 5,'tema 9', 6, 'Observacion 9', 19, 10),
+(1,3,'2020-01-01','2020-02-01',2,9,10,5,2, 6, 1,'tema 10',7, 'Observacion 0', 10, 10);
 
 INSERT INTO `cotizaciones_generales` (id_cotizacion, id_facultad, id_carrera) VALUES
 (1,1,1),

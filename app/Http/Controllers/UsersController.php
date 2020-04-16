@@ -19,7 +19,9 @@ class UsersController extends Controller
 {
     public static function sphinx_sap(Request $request)
     {
+        dd($request->all());
 
+        //$personas = Persona::orWhere();
         $user           = new User;
         $busqueda       = $request->all();
         $resultBusqueda = $user->busqueda($busqueda['buscar']);

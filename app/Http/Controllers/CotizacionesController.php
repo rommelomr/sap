@@ -10,7 +10,8 @@ use App\Cliente;
 use App\Carrera;
 use App\Universidad;
 use App\Facultad;
-use App\Curso;
+use App\TipoCotizacion;
+use App\Posgrado;
 use App\Modalidad;
 use App\Medio;
 use App\NivelAcademico;
@@ -55,7 +56,7 @@ class CotizacionesController extends Controller
             $query->with('persona');
         },'universidad','nivelAcademico','cotizacionGeneral'=>function($query){
             $query->with(['carrera','facultad']);
-        },'cotizacionPosgrado','grado','modalidad','curso','medio','ficha'])->where('id',$id)->paginate(10);
+        },'cotizacionPosgrado','grado','modalidad','tipo_cotizacion','medio','ficha'])->where('id',$id)->paginate(10);
         session()->flash('tab',2);
 
         $cotizacion = Cotizacion::with(['cliente','universidad','nivelAcademico','cotizacionGeneral'=>function($query){
@@ -73,7 +74,7 @@ class CotizacionesController extends Controller
         session()->flash('edit_facultad',$cotizacion->cotizacionGeneral != null ? $cotizacion->cotizacionGeneral->id_facultad : null);
         session()->flash('edit_carrera',$cotizacion->cotizacionGeneral != null ? $cotizacion->cotizacionGeneral->id_carrera : null);
         session()->flash('edit_profesion',$cotizacion->id_profesion != null ? $cotizacion->id_profesion : null);
-        session()->flash('edit_curso',$cotizacion->id_curso != null ? $cotizacion->id_curso : null);
+        session()->flash('edit_tipo_cotizacion',$cotizacion->id_tipo_cotizacion != null ? $cotizacion->id_tipo_cotizacion : null);
         session()->flash('edit_modalidad',$cotizacion->modalidad != null ? $cotizacion->modalidad->id : null);
         session()->flash('edit_validez',$cotizacion->validez != null ? $cotizacion->validez : null);
         session()->flash('edit_tema',$cotizacion->tema != null ? $cotizacion->tema : null);
@@ -85,12 +86,12 @@ class CotizacionesController extends Controller
         $facultades = Facultad::all();
         $carreras = Carrera::all();
         $profesiones = Profesion::all();
-        $cursos = Curso::all();
+        $tipos_cotizacion = TipoCotizacion::all();
         $modalidades = Modalidad::all();
         $medios = Medio::all();
 
         //dd($cotizacion);
-        return view('cotizaciones',compact('cotizacion','cotizaciones','niveles','universidades','facultades','carreras','profesiones','cursos','modalidades','medios'));
+        return view('cotizaciones',compact('cotizacion','cotizaciones','niveles','universidades','facultades','carreras','profesiones','tipos_cotizacion','modalidades','medios'));
     }
 
     public static function validarPermisosModificacion($cotizacion,$request){
@@ -110,8 +111,7 @@ class CotizacionesController extends Controller
             'edit_carrera'    => ['exists:carreras,id','nullable',Rule::requiredIf(function()use($request){
                 return $request->edit_nivel <= 5;
             })],
-            'edit_profesion'    => ['exists:profesiones,id','nullable'],
-            'edit_curso'    => ['exists:cursos,id','nullable'],
+            'edit_tipo_cotizacion'    => ['exists:tipos_cotizacion,id','nullable'],
             'edit_avance'    => ['numeric','nullable'],
             'edit_validez'    => ['numeric','nullable'],
             'edit_modalidad'    => ['exists:modalidades,id','nullable'],
@@ -164,8 +164,11 @@ class CotizacionesController extends Controller
                 $carrera_back = "";
             }
         }
-        $cotizacion->id_profesion = $request->edit_profesion; 
-        $cotizacion->id_curso = $request->edit_curso; 
+        if($request->edit_profesion != null){
+            $profesion = Profesion::firstOrCreate(['nombre'=>$request->profesion]);
+            $cotizacion->id_profesion = $request->edit_profesion; 
+        }
+        $cotizacion->id_tipo_cotizacion = $request->edit_tipo_cotizacion; 
         $cotizacion->id_modalidad = $request->edit_modalidad; 
         $cotizacion->id_medio = $request->edit_medio; 
         $cotizacion->avance = $request->edit_avance; 
@@ -186,7 +189,7 @@ class CotizacionesController extends Controller
             'edit_facultad' =>$facultad_back, 
             'edit_carrera' =>$carrera_back, 
             'edit_profesion' =>$cotizacion->id_profesion, 
-            'edit_curso' =>$cotizacion->id_curso, 
+            'edit_tipo_cotizacion' =>$cotizacion->id_tipo_cotizacion, 
             'edit_avance' =>$cotizacion->avance, 
             'edit_validez' =>$cotizacion->validez, 
             'edit_modalidad' =>$cotizacion->id_modalidad, 
@@ -235,7 +238,7 @@ class CotizacionesController extends Controller
                         $query->where('nombre','like','%'.$string.'%');
                     });
                 })
-            ->orWhereHas('curso',function($query) use ($string){
+            ->orWhereHas('tipo_cotizacion',function($query) use ($string){
                     $query->where('nombre','like','%'.$string.'%');
                 })
             ->orWhereHas('modalidad',function($query) use ($string){
@@ -248,7 +251,7 @@ class CotizacionesController extends Controller
                 $query->with('persona');
         },'universidad','nivelAcademico','cotizacionGeneral'=>function($query){
             $query->with(['carrera','facultad']);
-        },'modalidad','medio','curso','ficha'])->paginate(10);
+        },'modalidad','medio','tipo_cotizacion','ficha'])->paginate(10);
         })->whereHas('ficha',function($query)use($auth){
             $query->where('id_asesor',$auth->asesor->id);
         })->paginate(10);
@@ -265,7 +268,7 @@ class CotizacionesController extends Controller
         $universidades = Universidad::all();
         $facultades = Facultad::all();
         $carreras = Carrera::all();
-        $cursos = Curso::all();
+        $tipos_cotizacion = TipoCotizacion::all();
         $profesiones = Profesion::all();
         $modalidades = Modalidad::all();
         $medios = Medio::all();
@@ -276,7 +279,7 @@ class CotizacionesController extends Controller
             'facultades' => $facultades,
             'carreras' => $carreras,
             'profesiones' => $profesiones,
-            'cursos' => $cursos,
+            'tipos_cotizacion' => $tipo_cotizacion,
             'modalidades' => $modalidades,
             'medios' => $medios
         ]);
@@ -316,7 +319,7 @@ class CotizacionesController extends Controller
             $query->with('persona');
         },'universidad','nivelAcademico','cotizacionGeneral'=>function($query){
             $query->with(['carrera','facultad']);
-        },'cotizacionPosgrado','modalidad','curso','medio','ficha'])->orderBy('created_at','DESC'); 
+        },'cotizacionPosgrado','modalidad','posgrado','tipoCotizacion','medio','ficha'])->orderBy('created_at','DESC'); 
         $auth = Auth::user();
         if($auth->id_nivel == 1){
             $cotizaciones = $cotizaciones->paginate(10);
@@ -332,9 +335,10 @@ class CotizacionesController extends Controller
         $facultades = Facultad::all();
         $carreras = Carrera::all();
         $profesiones = Profesion::all();
-        $cursos = Curso::all();
+        $tipos_cotizacion = TipoCotizacion::all();
         $modalidades = Modalidad::all();
         $medios = Medio::all();
+        $posgrados = Posgrado::all();
         
         /*
         $resultBusqueda = [
@@ -343,7 +347,7 @@ class CotizacionesController extends Controller
             'mensaje' => null,
         ];
         */
-        return view('cotizaciones', compact('cotizaciones','niveles','cursos','universidades','facultades','carreras','profesiones','modalidades','medios'));
+        return view('cotizaciones', compact('cotizaciones','niveles','tipos_cotizacion','universidades','facultades','carreras','profesiones','modalidades','medios','posgrados'));
     }
 
     public static function sphinx_sapcotid(Request $request)
@@ -360,30 +364,78 @@ class CotizacionesController extends Controller
             return redirect()->route('cotizaciones', [$id]);
     }
     
-    public function guardarCotizacion(Request $request){
+    public function firstOrCreate($input,$Class){
+        if($input!=null){
 
+            return $Class::firstOrCreate(['nombre'=>$input]);
+        }else{
+            return null;
+        }
+    }
+    public function guardarCotizacion(Request $request){
+        $client_error = 'El cliente no se ha cargado correctamente';
+        $msg = [
+            'id_cliente.required'   => $client_error,
+            'id_cliente.exists'     => $client_error,
+            'id_cliente.numeric'    => $client_error, 
+            'direccion.required'    => $client_error.'. Dirección no cargada.',
+            'celular.required'      => $client_error.'. Celular no cargado.',
+            'telefono.required'     => $client_error.'. Teléfono no cargado.',
+            //Listos
+            'nivel.required'        => 'Debe seleccionarse un nivel',
+            'nivel.exists'          => 'El nivel seleccionado no es válido',
+            'universidad.exists'    => 'La universidad seleccionada no es válida',
+            'tipo_cotizacion.exists'=> 'El tipo de cotización seleccionado no es válido',
+
+            'modalidad.exists'      => 'La modalidad seleccionada no es válida',
+            'modalidad.required'    => 'Debe seleccionar una modalidad',
+            'curso.min'             => 'El curso no es válido',
+            'curso.max'             => 'El curso no es válido',
+            'paralelo.in'           => 'El paralelo seleccionado no es válido',
+
+            'validez.numeric'       => 'El campo Validez debe ser numérico',
+            'validez.min'           => 'El campo Validez no debe ser menor a 0',
+            'precio.required'       => 'Debe ingresar un precio',
+            'precio.numeric'        => 'El precio debe ser numérico',
+            'precio.min'            => 'El precio no puede ser menor a 0',
+
+            'tema.max'              => 'El campo Tema no puede tener más de 65535 caracteres',
+            'observacion.max'       => 'El campo Observación no puede tener más de 65535 caracteres',
+            'medio.exists'          => 'El medio no es válido',
+        ];
         $request->validate([
             'id_cliente'=> ['required','exists:clientes,id','numeric'],
-            'precio'    => ['required','numeric'],
             'direccion'    => ['required'],
             'celular'    => ['required'],
             'telefono'    => ['required'],
+
             'nivel'    => ['bail','required','exists:niveles_academicos,id'],
             'universidad'    => ['exists:universidades,id','nullable'],
-            'facultad'    => ['exists:facultades,id','nullable'],
-            'carrera'    => ['exists:carreras,id','nullable'],
-            'profesion'    => ['exists:profesiones,id','nullable'],
-            'curso'    => ['exists:cursos,id','nullable'],
+            'tipo_cotizacion'    => ['exists:tipos_cotizacion,id','nullable'],
+
             'modalidad'    => ['exists:modalidades,id','required'],
-            'medio'    => ['exists:medios,id','nullable'],
+            'curso'    => ['min:1','max:10','nullable'],
+            'paralelo'    => ['in:A,B,C,D,E,F'],
+
+            'validez'    => ['numeric','nullable','min:1'],
+            'precio'    => ['required','numeric','min:0'],
+
             'tema'    => ['max:65535','nullable'],
             'observacion'    => ['max:65535','nullable'],
-        ]);
+            'medio'    => ['exists:medios,id','nullable'],
+
+        ],$msg);
+
+        $profesion = $this->firstOrCreate($request->profesion,Profesion::class);
+
+        $posgrado = $this->firstOrCreate($request->posgrado,Posgrado::class);
         $cotizacion = Cotizacion::create([
             'id_cliente'=>$request->id_cliente,
             'id_universidad'=>$request->universidad,
             'id_nivel_academico'=>$request->nivel,
-            'id_curso'=>$request->curso,
+            'id_tipo_cotizacion'=>$request->tipo_cotizacion,
+            'id_profesion'=>$profesion->id,
+            'id_posgrado'=>$posgrado->id,
             'id_modalidad'=>$request->modalidad,
             'id_medio'=>$request->medio,
             'tema'=>$request->tema,
@@ -393,10 +445,24 @@ class CotizacionesController extends Controller
             'validez'=>$request->validez,
         ]);
         if($request->nivel < 6){
+            $facultad = $this->firstOrCreate($request->facultad,Facultad::class);
+            if($request->carrera!=null){
+                $id_carrera = Carrera::where('id',$request->carrera)->firstOr(function()use($request,$facultad){
+                    
+                        return Carrera::create([
+                            'nombre'=>$request->carrera,
+                            'id_facultad' => $facultad->id,
+                        ]);
+                    }
+                )->id;
+            }else{
+
+                $id_carrera = null;
+            }
             CotizacionGeneral::create([
-               'id_cotizacion' =>$cotizacion->id,
-                'id_facultad'=>$request->facultad,
-                'id_carrera'=>$request->carrera
+                'id_cotizacion' =>$cotizacion->id,
+                'id_facultad'=>$facultad->id,
+                'id_carrera'=>$id_carrera
             ]);
         }else{
             CotizacionPosgrado::create([

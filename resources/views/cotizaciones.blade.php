@@ -78,6 +78,7 @@
 						    					@else
 						    						Carrera no seleccionada
 						    					@endif
+					    					
 					    					@else
 					    						Posgrado
 					    					@endif
@@ -123,6 +124,16 @@
 					    					@else
 					    						"edit_universidades":"{{$cotizacion->id_universidad}}",
 					    					@endif
+					    					@if(!isset($cotizacion->curso))
+					    						"edit_curso":"",
+					    					@else
+					    						"edit_curso":"{{$cotizacion->curso}}",
+					    					@endif
+					    					@if(!isset($cotizacion->paralelo))
+					    						"edit_paralelo":"",
+					    					@else
+					    						"edit_paralelo":"{{$cotizacion->paralelo}}",
+					    					@endif
 					    					@if(!isset($cotizacion->cotizacionGeneral->id_facultad))
 					    						"edit_facultades":"",
 					    					@else
@@ -138,10 +149,10 @@
 					    					@else
 					    						"edit_profesiones":"{{$cotizacion->id_profesion}}",
 					    					@endif
-					    					@if(!isset($cotizacion->id_curso))
-					    						"edit_curso":"",
+					    					@if(!isset($cotizacion->id_tipo_cotizacion))
+					    						"edit_tipo_cotizacion":"",
 					    					@else
-					    						"edit_curso":"{{$cotizacion->id_curso}}",
+					    						"edit_tipo_cotizacion":"{{$cotizacion->id_tipo_cotizacion}}",
 					    					@endif
 					    					@if(!isset($cotizacion->id_modalidad))
 					    						"edit_modalidades":"",
@@ -221,11 +232,12 @@
 							</div>
 						</div>
 						<hr>
+						<form action="{{route('guardarCotizacion')}}" method="post" autocomplete="off">
+							@csrf
 							<div class="row">
 								<div class="col s12 l6">
 									<div class="row">
 
-						<form action="{{route('guardarCotizacion')}}" method="post">
 
 										<div class="input-field col s12">
 											<input autocomplete="off" id="nombre" type="text" placeholder="Nombre" list="nombres" name="nombre" @if(old('nombre')) value="{{old('nombre')}}" @endif>
@@ -233,72 +245,105 @@
 										</div>
 
 										<div class="input-field col s4">
+
 											<input id="direccion" type="text" readonly placeholder="direccion" name="direccion" @if(old('direccion')) value="{{old('direccion')}}" @endif>
 										</div>
 
 										<div class="input-field col s4">
+
 											<input id="celular" type="text" readonly placeholder="celular" name="celular" @if(old('celular')) value="{{old('celular')}}" @endif>
 										</div>
 
 										<div class="input-field col s4">
+
 											<input id="telefono" type="text" readonly placeholder="telefono" name="telefono" @if(old('telefono')) value="{{old('telefono')}}" @endif>
 										</div>
-									@csrf
-									<input hidden id="id_cliente" name="id_cliente" @if(old('id_cliente')) value="{{old('id_cliente')}}" @endif>
+
+										<input hidden id="id_cliente" name="id_cliente" @if(old('id_cliente')) value="{{old('id_cliente')}}" @endif>
 
 										<div class="input-field col s4">
-											<input type="text" list="dl-niveles" id="niveles" placeholder="Nivel" name="nivel" value="{{old('nivel')}}">
-										    <datalist id="dl-niveles">
+
+										    <select name="nivel" class="browser-default">
+										    	<option disabled selected>Nivel</option>
 										    	@foreach($niveles as $nivel)
-										    			<option value="{{$nivel->id}}">{{$nivel->nombre}}</option>
+										    			<option 
+										    			@if(old('nivel') == $nivel->id)
+										    				selected
+										    			@endif
+										    			value="{{$nivel->id}}">{{$nivel->nombre}}</option>
 										    	@endforeach
-										    </datalist>
+										    </select>
 										</div>
 
 										<div class="input-field col s4">
-											<input type="text" list="dl-universidades" id="universidades" placeholder="Universidad" name="universidad">
-										    <datalist id="dl-universidades">
+
+										    <select name="universidad" class="browser-default">
+										    	<option disabled selected>Universidad</option>
 										    	@foreach($universidades as $universidad)
-										    		<option value="{{$universidad->id}}">{{$universidad->nombre}}</option>
+										    		<option
+									    			@if(old('universidad') == $universidad->id)
+									    				selected
+									    			@endif
+										    		 value="{{$universidad->id}}">{{$universidad->nombre}}</option>
 										    	@endforeach
-										    </datalist>
+										    </select>
 										</div>
 
 										<div class="input-field col s4">
-											<input type="text" list="dl-facultades" id="facultades" placeholder="Facultad" name="facultad">
-										    <datalist id="dl-facultades">
-										    	@foreach($facultades as $facultad)
-										    		<option value="{{$facultad->id}}">{{$facultad->nombre}}</option>
-										    	@endforeach
-										    </datalist>
-										</div>
 
+										    <select name="tipo_cotizacion" class="browser-default">
+										    		<option disabled selected>Tipo</option>
+										    	@foreach($tipos_cotizacion as $tipo_cotizacion)
+										    		<option
+										    		@if(old('tipo_cotizacion') == $tipo_cotizacion->id)
+									    				selected
+									    			@endif
+										    		value="{{$tipo_cotizacion->id}}">{{$tipo_cotizacion->nombre}}</option>
+										    	@endforeach
+										    </select>
+										</div>
 										<div class="input-field col s4">
-											<input type="text" list="dl-carreras" id="carreras" placeholder="Carrera" name="carrera">
-										    <datalist id="dl-carreras">
+
+											<input type="text" list="dl-carreras" id="carreras" placeholder="Carrera" name="carrera" value="{{old('carrera')}}">
+										    
+										    <datalist id="dl-carreras" class="browser-default" name="carrera">
+										    	<option disabled selected>Carrera</option>
 										    	@foreach($carreras as $carrera)
-										    		<option value="{{$carrera->id}}">{{$carrera->nombre}}</option>
+										    		<option
+										    		@if(old('carrera') == $carrera->id)
+									    				selected
+									    			@endif
+										    		value="{{$carrera->nombre}}"></option>
 										    	@endforeach
 										    </datalist>
 										</div>
 
 										<div class="input-field col s4">
-											<input type="text" list="dl-profesiones" id="profesiones" placeholder="Profesion" name="profesion">
+
+											<input type="text" list="dl-profesiones" id="profesiones" placeholder="Profesion" name="profesion" value="{{old('profesion')}}">
 										    <datalist id="dl-profesiones">
 										    	@foreach($profesiones as $profesion)
-										    		<option value="{{$profesion->id}}">{{$profesion->nombre}}</option>
+										    		<option value="{{$profesion->nombre}}"></option>
 										    	@endforeach
 										    </datalist>
 										</div>
 
 										<div class="input-field col s4">
-											<input type="text" list="dl-cursos" id="cursos" placeholder="Curso" name="curso">
-										    <datalist id="dl-cursos">
-										    	@foreach($cursos as $curso)
-										    		<option value="{{$curso->id}}">{{$curso->nombre}}</option>
+										    
+											<input type="text" list="dl-facultades" id="facultades" placeholder="Facultad" name="facultad" value="{{old('facultad')}}">
+										    
+										    <datalist id="dl-facultades">
+										    	<option disabled selected>Facultad</option>
+										    	@foreach($facultades as $facultad)
+										    		<option
+										    		@if(old('facultad') == $facultad->id)
+									    				selected
+									    			@endif
+										    		value="{{$facultad->nombre}}"></option>
 										    	@endforeach
-										    </datalist>
+										    </select>								
 										</div>
+
 
 									</div>
 								</div>
@@ -306,40 +351,85 @@
 									<br><br>
 									<div class="row">
 										<div class="input-field col s4">
-											<input type="text" list="dl-modalidades" id="modalidades" placeholder="Modalidad" name="modalidad">
-										    <datalist id="dl-modalidades">
+
+										    <select name="modalidad" class="browser-default">
+										    	<option disabled selected>Modalidad</option>
 										    	@foreach($modalidades as $modalidad)
-										    		<option value="{{$modalidad->id}}">{{$modalidad->nombre}}</option>
+										    		<option
+										    		@if(old('modalidad') == $modalidad->id)
+									    				selected
+									    			@endif
+										    		value="{{$modalidad->id}}">{{$modalidad->nombre}}</option>
 										    	@endforeach
-										    </datalist>
+										    </select>
+										    
 										</div>
 										<div class="input-field col s4">
-											<label for="validez">Validez de la oferta</label>
-											<input type="number" id="validez" name="validez">
+
+										    <select name="curso" class="browser-default">
+										    	<option disabled selected>Curso</option>
+										    	@for($i = 1; $i<=10; $i++)
+										    		<option
+										    		@if(old('curso')==$i)
+										    			selected
+										    		@endif
+										    		value="{{$i}}">{{$i}}°</option>
+										    	@endfor
+										    </select>
+
 										</div>
+										<div class="input-field col s4">
+
+										    <select name="paralelo" class="browser-default">
+										    	<option disabled selected>Paralelo</option>
+										    	@for($i = 65; $i<=70; $i++)
+										    		<option value="{{chr($i)}}">{{chr($i)}}</option>
+										    	@endfor
+										    </select>
+
+										</div>
+										
+										<div class="input-field col s4">
+											<input type="text" id="posgrado" name="posgrado" list="dl-posgrados" placeholder="Posgrado" value="{{old('posgrado')}}">
+											<datalist id="dl-posgrados">
+												@forelse($posgrados as $posgrado)
+													<option value="{{$posgrado->nombre}}">{{$posgrado->nombre}}</option>
+												@empty
+												@endforelse
+											</datalist>
+										</div>
+										<div class="input-field col s4">
+											<label for="validez">Validez</label>
+											<input type="number" id="validez" name="validez" value="{{old('validez')}}">
+										</div>
+										
 										<div class="input-field col s4">
 											<label for="precio">Precio</label>
-											<input type="number" id="precio" name="precio">
+											<input type="number" id="precio" name="precio" value="{{old('precio')}}">
 										</div>
 										<div class="input-field col s6">
 											<label for="tema">Tema</label>
-											<textarea id="tema" name="tema"></textarea>
+											<textarea id="tema" name="tema" value="{{old('tema')}}"></textarea>
 										</div>
 										<div class="input-field col s6">
 											<label for="observaciones">Observaciones</label>
-											<textarea id="observaciones" name="observacion"></textarea>
+											<textarea id="observaciones" name="observacion" value="{{old('observacion')}}"></textarea>
 										</div>
 										<div class="input-field col s6">
 											<label for="avance">Avance %</label>
-											<input type="number" id="avance" name="avance">
+											<input type="number" id="avance" name="avance" value="{{old('avance')}}">
 										</div>
 										<div class="input-field col s6">
-											<input type="text" list="dl-medios" id="medios" placeholder="medio" name="medio">
-										    <datalist id="dl-medios">
+										    <select id="dl-medios" name="medio" class="browser-default">
+										    	<option disabled selected>Medio</option>
 										    	@foreach($medios as $medio)
-										    		<option value="{{$medio->id}}">{{$medio->nombre}}</option>
+										    		<option
+										    		@if(old('medio') == $medio->id)
+										    			selected
+										    		@endif
+										    		value="{{$medio->id}}">{{$medio->nombre}}</option>
 										    	@endforeach
-										    </datalist>
+										    </select>
 										</div>
 									</div>
 								</div>
@@ -483,18 +573,18 @@
 				</div>
 
 				<div class="input-field col s11 l3 offset-l1">
-					<input class="input-editable" type="text" list="dl-edit_cursos" id="edit_curso" placeholder="Curso" name="edit_curso" readonly
-					@if(old('edit_curso'))
-						value="{{old('edit_curso')}}"
-					@elseif(session('edit_curso'))
-						value="{{session('edit_curso')}}"
+					<input class="input-editable" type="text" list="dl-edit_tipo_cotizacion" id="edit_tipo_cotizacion" placeholder="Tipo" name="edit_tipo_cotizacion" readonly
+					@if(old('edit_tipo_cotizacion'))
+						value="{{old('edit_tipo_cotizacion')}}"
+					@elseif(session('edit_tipo_cotizacion'))
+						value="{{session('edit_tipo_cotizacion')}}"
 					@endif
 					>
-					<i class="material-icons prefix edit" data-brother="edit_curso">edit</i>
-					<span class="helper-text">curso</span>
-					<datalist id="dl-edit_cursos">
-					@foreach($cursos as $curso)
-						<option value="{{$curso->id}}">{{$curso->nombre}}</option>
+					<i class="material-icons prefix edit" data-brother="edit_tipo_cotizacion">edit</i>
+					<span class="helper-text">Tipo</span>
+					<datalist id="dl-edit_tipo_cotizacion">
+					@foreach($tipos_cotizacion as $tipo_cotizacion)
+						<option value="{{$tipo_cotizacion->id}}">{{$tipo_cotizacion->nombre}}</option>
 					@endforeach
 					</datalist>
 				</div>

@@ -1,0 +1,173 @@
+personas-> Tabla padre de USUARIOS, ASESORES Y CLIENTES
+	id: (pk)
+	nombre:  varchar(100)
+	apellido: varchar(100)
+	cedula: unsigned int
+	email: varchar(100)
+	telefono: integer
+	celular: integer
+	direccion: text
+	estado: char
+	
+users-> Tabla que guardará los datos de los usuarios
+	id: (pk)
+	id_persona: (fk)
+	id_nivel: (fk)
+	username: integer
+	password: varchar (150)
+
+asesores-> Tabla que guardará los datos de los asesores 
+	id: (pk)
+	id_usuario: (fk)
+	profesion: varchar (200)
+	sexo: varchar (150)
+
+clientes-> Tabla que guardará los datos de los clientes
+	id: (pk)
+	id_persona: (fk)
+	carnet: varchar (250)
+
+cotizacion-> Tabla que guardará los datos que se solicitan cuando se acuerda una asesoría a un cliente
+	id: (pk)
+	numero_cotizacion: longint
+	fecha: se utilizará el timestamp de laravel
+	id_cliente: (fk)
+	id_universidad: (fk)
+	id_nivel_academico: (fk)
+	id_facultad: (fk)
+	id_carrera: (fk)
+	id_grado: (fk)
+	id_modalidad: (fk)
+	id_medio: (fk)
+	tema: text
+	avance: varchar (250)
+	observacion: text
+	precio_total: integer
+	validez: integer
+	
+Medios-> Tabla que guardará los medios por los que los clientes conocen a la empresa
+	id: (pk)
+	nombre: text
+
+niveles_academicos-> guardará los niveles academicos de un cliente (necesario para la creacion de una ficha académica)
+	id: (pk)
+	nombre: text
+
+universidades-> guardará el nombre de las universidades en que puede estar un cliente (necesario para la creacion de una cotización)
+	id: (pk)
+	nombre: text
+
+facultades-> guardará las facultades en las que puede estudiar un cliente (necesario para la creacion de un cotización)
+	id: (pk)
+	nombre: text
+
+carreras-> guardará la carrera que estudia un cliente (necesario para la creacion de una cotización) y se utilizará tambien para indicar la profesion del docente
+	id: (pk)
+	nombre: text
+
+grados-> guardará los niveles academicos de un cliente (necesario para la creacion de una ficha académica)
+	id: (pk)
+	nombre: text
+
+Modalidades-> guardará las modalidades que puede tener una cotización
+	id: (pk)
+	nombre: text
+
+Tipos_Ingreso-> Tabla que guardará los tipos de ingreso para la tabla "Ingresos"
+	id: (pk)
+	nombre: Nombre del tipo de ingreso
+	
+Ingresos-> Tabla que guardará las entradas de dinero que recibe el negocio
+	id: (pk)
+	fecha: se utilizará el timestamp de laravel
+	id_tipo_ingreso: (fk)
+	emisor: integer (fk)
+	id_modalidad: (fk)
+	concepto: text
+	id_tipo_pago_ingreso: (fk)
+
+tipos_pago_ingreso-> guardará el tipo de ingreso
+	id: (pk)
+	nombre: text
+
+tipos_pago_egreso-> guardará el tipo de egreso
+	id: (pk)
+	nombre: text
+
+Egresos-> Tabla que guardará los egresos monetarios del negocio
+	id: (pk)
+	id_usuario: (fk)
+	Fecha: se utilizará el timestamp de laravel
+	id_tipo_pago_egreso: (fk)
+	beneficiario: integer (fk)
+	id_modalidad: (fk)
+	concepto: text
+	cantidad: integer
+
+
+Caja_Chica-> Tabla que guardará la suma de dinero que el negocio tiene en su caja chica
+	id: (pk)
+	id_usuario: (fk)
+	Monto: integer
+	Fecha: se utilizará el timestamp de laravel
+
+Cargas-> Tabla que guardará los datos de cuando se abona a la caja chica
+	id: (pk)
+	id_usuario: (fk)
+	Abonador: integer (fk)
+	monto: integer
+	fecha: se utilizará el timestamp de laravel
+	concepto: text
+
+cursos-> Tabla que guardará los cursos disponibles al momento de generar la ficha académica
+	id: (pk)
+	nombre: text
+
+
+Etapas-> Guardará las etapas de una Ficha Académica
+	id: pk
+	nombre: varchar
+
+fichas_academicas-> Tabla que guardará los datos de las asesorias que se realizan o han realizado, a fin de hacer un seguimiento a dichas asesorias. (Es como el 
+	id: (pk)típico historial médico pero de asesorias en este caso. Si )
+
+	id_cliente: (fk) //se puede obtener de id_contrato o de id_contrato
+	id_asesor: (fk) //se puede obtener de id_contrato
+
+	id_contrato: (fk)
+	id_cotizacion: (fk)
+
+	fecha_inicio: date
+	plazo: integer
+	fecha_fin: integer
+	id_etapa: (fk)
+	fecha_registro: se utilizará el timestamp de laravel
+	Estado: tinyint // 0: en desarrollo 1:cancelada 2:finalizada
+
+Observaciones_Fichas
+	id_ficha_academica: (fk)
+	observacion: text
+
+tipos_contrato
+	nombre: text
+
+Contratos-> Tabla que guardará el acuerdo entre cliente y asesor
+	id: (pk)
+	numero_contrato: integer
+	id_asesor: (fk)
+	id_cliente: (fk)
+	id_tipo_contrato: (fk)
+	monto: integer
+	daf: integer (fk)
+
+pagos_asesores-> Tabla que hereda de Egresos. Guardará los egresos realizados como pago a los asesores
+	id_ingreso: (fk)
+	id_ficha_economica: (fk)
+
+pagos_clientes-> Tabla que hereda de ingresos. Guardará los ingresos provenientes del pago de los clientes
+	id_egreso: (fk)
+	id_ficha_economica: (fk)
+
+Fichas_Economicas -> Tabla que guardará el registro de pagos del cliente y al asesor
+	id_cotización: (fk)
+	id_contrato: (fk)

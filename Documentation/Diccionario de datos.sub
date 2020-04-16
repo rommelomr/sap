@@ -1,0 +1,165 @@
+personas-> Tabla padre de USUARIOS, ASESORES Y CLIENTES
+	nombre: nombre de la persona
+	apellido: nombre de la persona
+	cedula: cedula de la persona
+	telefonos: telefono
+	celular:
+	direccion: direccion de la persona
+	email: correo electrónico de la persona
+	estado: estado de la persona 1: activo 0:inactivo
+	
+users-> Tabla que guardará los datos de los usuarios
+	id_persona: (fk)
+	id_nivel: (Rol del usuario) 1: administrador 2: asesor (fk)
+	username: nombre de usuario
+	password: contraseña encriptada del usuario
+
+asesores-> Tabla que guardará los datos de los asesores
+	id_usuario: (fk)
+	profesion: profesion del asesor
+	sexo: sexo del asesor
+
+clientes-> Tabla que guardará los datos de los clientes
+	id_persona: (fk)
+	carnet: código del carnet universitario del estudiante
+
+cotizacion-> Tabla que guardará los datos que se solicitan cuando se acuerda una asesoría a un cliente
+	fecha: fecha de creación de la cotizacion
+	id_cliente: (fk)
+	numero_cotizacion: guardará el numero de cotización, cuenta que se lleva internamente en la empresa
+	id_universidad: (fk)
+	id_nivel_academico: (fk)
+	id_facultad: (fk)
+	id_carrera: (fk)
+	id_grado: (fk)
+	id_modalidad: (fk)
+	id_medio: (fk)
+	tema: Título del trabajo, tesis, monografia, etc
+	avance: Porcentaje que indica el progreso culminado de la asesoria
+	observaciones: Acotación en la cotización
+	precio_total: Precio de la asesoría
+	validez: Numero que indica los dias que la cotización será válida
+
+Medios -> Tabla que guardará los medios por los que los clientes conocen a la empresa
+	nombre -> nombre del medio
+
+niveles_academicos-> guardará los niveles academicos de un cliente (necesario para la creacion de una ficha académica)
+	nombre: nombre del nivel
+
+universidades-> guardará el nombre de las universidades en que puede estar un cliente (necesario para la creacion de una cotización)
+	nombre: nombre de la universidad
+
+facultades-> guardará las facultades en las que puede estudiar un cliente (necesario para la creacion de un cotización)
+	nombre: nombre de la facultad
+
+carreras-> guardará la carrera que estudia un cliente (necesario para la creacion de una cotización)
+	nombre: nombre de la carrera
+
+grados-> guardará los niveles academicos de un cliente (necesario para la creacion de una ficha académica)
+	nombre: nombre del curso o grado
+
+Modalidades-> guardará las modalidades que puede tener una cotización
+	nombre: nombre del tipo de trabajo (tesis, monografía, etc)
+
+Tipos_Ingreso-> Tabla que guardará los tipos de ingreso para la tabla "Ingresos"
+	id: (pk)
+	nombre: Nombre del tipo de ingreso
+
+Ingresos-> Tabla que guardará las entradas de dinero que recibe el negocio
+	fecha: fecha en que se registró el ingreso
+	id_tipo_pago_ingreso: (fk)
+	id_tipo_ingreso: (fk)
+	emisor: (fk id_cliente)
+	id_modalidad: (fk)
+	concepto: razon del ingreso
+	numero_recibo: numero de recibo del ingreso
+	monto: monto del ingreso
+
+tipos_pago_ingreso
+	nombre: nombre de los tipos de pago para los ingresos
+
+tipos_pago_egreso
+	nombre: nombre de los tipos de pago para los egresos
+
+Egresos-> Tabla que guardará los egresos monetarios del negocio
+	Fecha: fecha en que se registró el egreso
+	id_tipo_pago_egreso: (fk)
+	id_usuario: (fk) //Para saber quién realizó el pago
+	beneficiario: (id_persona porque puede darse el caso de que se le pague tambien a un usuario)
+	id_modalidad: (fk)
+	monto: monto del egreso
+	numero_recibo: numero de recibo del egreso
+	concepto: razon del ingreso 
+
+Caja_Chica-> Tabla que guardará la suma de dinero que el negocio tiene en su caja chica
+	id_usuario: (fk)
+	Monto: Cantidad que se guardará en caja chica
+	Fecha: fecha en la que se registra el ingreso del monto
+
+Cargas-> Tabla que guardará los datos de cuando se abona a la caja chica
+	id_usuario: (fk) Persona que hace el registro en el sistema
+	Abonador: (fk id_persona pues quien abona puede ser un cliente)
+	monto: cantidad que será cargada
+	fecha: fecha en la que se registró la carga
+	concepto: Razon de la carga
+
+cursos-> Tabla que guardará los cursos disponibles al momento de generar la ficha académica
+	nombre: nombre del curso
+
+Etapas-> Guardará las etapas de una Ficha Académica
+	id: pk
+	nombre: Nombre de la etapa
+
+Fichas_Academicas-> Tabla que guardará los datos de las asesorias que se realizan o han realizado, a fin de hacer un seguimiento a dichas asesorias. (Es como el típico historial médico pero de asesorias en este caso. Si )
+
+	
+	id_cliente: (fk)
+	id_asesor: (fk)
+	id_contrato: (fk)
+	id_cotizacion: (fk)
+	
+
+	id_nivel_academico: (fk) Nivel academico del cliente
+	id_curso: (fk descripcion por aclarar)
+	fecha_inicio: Fecha en que comenzará la asesoría del trabajo
+	plazo: Numero de días que tardará la asesoría
+	fecha_fin: Fecha en que finalizará la asesoría, calculada por la fecha de inicio y el plazo
+	id_etapa: (fk Descripcion por aclarar)
+	fecha_registro: fecha en que se registra la ficha academica
+	Estado: Indicará si la asesoria está en desarrollo, cancelada o finalizada
+
+Observaciones_Fichas
+	id_ficha_academica: (fk)
+	observacion: Acotación de la ficha
+
+tipos_contrato
+	nombre: nombre del tipo de contrato
+
+Contratos -> Tabla que guardará el acuerdo entre cliente y asesor
+	numero_contrato: numero generado automaticamente con el formato numero/año (numero puede ser el ID de la tabla)
+	id_asesor: (fk)
+	id_cliente: (fk)
+	id_tipo_contrato: (fk)
+	monto: cantidad a pagar al asesor
+	daf: (FK de la persona que firmará el contrato)
+
+pagos_asesores-> Tabla que hereda de Egresos. Guardará los egresos realizados como pago a los asesores
+	id_egreso: (fk)
+	id_ficha_economica: (fk)
+
+pagos_clientes-> Tabla que hereda de ingresos. Guardará los ingresos provenientes del pago de los clientes
+	id_ingreso: (fk)
+	id_ficha_economica: (fk)
+
+Fichas_Economicas -> Tabla que guardará el registro de pagos del cliente y al asesor
+	id_cotización: (fk)
+	id_contrato: (fk)
+
+
+
+-------------------------
+PK: Primary Key
+FK: Foreign Key
+
+Cambios:
+	Se agregaron las tablas Pagos_asesores, Pagos_Clientes y Fichas_económicas
