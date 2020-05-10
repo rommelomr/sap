@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Cotizacion;
+use App\CotizacionBasica;
+use App\CotizacionUniversitaria;
 use App\CotizacionGeneral;
 use App\CotizacionPosgrado;
 use App\Persona;
@@ -94,89 +96,121 @@ class CotizacionesController extends Controller
         return view('cotizaciones',compact('cotizacion','cotizaciones','niveles','universidades','facultades','carreras','profesiones','tipos_cotizacion','modalidades','medios'));
     }
 
-    public static function validarPermisosModificacion($cotizacion,$request){
-        $auth = Auth::user();
-        return !($auth->id_nivel != 1) && ($cotizacion->precio_total != $request->edit_precio || $cotizacion->id_medio != $request->edit_medio);
-    }
     public static function modificarCotizacion(Request $request){
         session()->flash('tab',2);
-        $request->validate([
-            'edit_id_cotizacion'=> ['required','exists:cotizaciones,id','numeric'],
-            'edit_precio'    => ['required','numeric'],
-            'edit_nivel'    => ['exists:niveles_academicos,id','nullable'],
-            'edit_universidad'    => ['exists:universidades,id','nullable'],
-            'edit_facultad'    => ['exists:facultades,id','nullable',Rule::requiredIf(function()use($request){
-                return $request->edit_nivel <= 5;
-            })],
-            'edit_carrera'    => ['exists:carreras,id','nullable',Rule::requiredIf(function()use($request){
-                return $request->edit_nivel <= 5;
-            })],
-            'edit_tipo_cotizacion'    => ['exists:tipos_cotizacion,id','nullable'],
-            'edit_avance'    => ['numeric','nullable'],
-            'edit_validez'    => ['numeric','nullable'],
-            'edit_modalidad'    => ['exists:modalidades,id','nullable'],
-            'edit_medio'    => ['exists:medios,id','nullable'],
-            'edit_tema'    => ['max:65535','nullable'],
-            'edit_observacion'    => ['max:65535','nullable'],
-        ]);
+        Cotizacion::validateModify($request,Rule::class);
         session()->forget('tab');
         $cotizacion = Cotizacion::find($request->edit_id_cotizacion);
+/*
+          "edit_id_cotizacion" => "50"
+          "edit_nivel" => "2"
 
-        $validation_success = CotizacionesController::validarPermisosModificacion($cotizacion,$request);
 
-        if(!$validation_success){
-            return redirect()->back()->with(['messages'=>['No tiene permisos para realizar esta acción']]);
+          "edit_tipo_cotizacion" => "2"
+          "edit_universidad" => null
+          "edit_carreras" => null
+          "edit_profesion" => null
+          "edit_modalidades" => "1"
+          "edit_curso" => "5"
+          "edit_paralelo" => "A"
+          "edit_posgrado" => null
+          "edit_validez" => "12"
+          "edit_precio" => "12"
+          "edit_tema" => "asfd12"
+          "edit_observacion" => "asfd12"
+          "edit_avance" => "10"
+          "edit_medio" => "1"
+*/        
+        if($cotizacion->id_tipo_cotizacion != $request->edit_tipo_cotizacion){
+            $cotizacion->id_tipo_cotizacion = $request->edit_tipo_cotizacion;
         }
 
-        $cotizacion->precio_total = $request->edit_precio; 
-        $cotizacion->id_nivel_academico = $request->edit_nivel; 
-        $cotizacion->id_universidad = $request->edit_universidad;
-        if($cotizacion->cotizacionPosgrado == null){
-            if($request->edit_nivel < 6){
-                $cotizacion->cotizacionGeneral->id_facultad = $request->edit_facultad; 
-                $cotizacion->cotizacionGeneral->id_carrera = $request->edit_carrera; 
-                $facultad_back = $request->edit_facultad;
-                $carrera_back = $request->edit_carrera;
-            }else{
-                $cotizacion_general = CotizacionGeneral::where('id_cotizacion',$cotizacion->id)->first();
-                $cotizacion_general->delete();
+        if($cotizacion->curso != $request->edit_curso){
+            $cotizacion->curso = $request->edit_curso;
+        }
 
-                $facultad_back = "";
-                $carrera_back = "";
+        if($cotizacion->paralelo != $request->edit_paralelo){
+            $cotizacion->paralelo = $request->edit_paralelo;
+        }
 
-                CotizacionPosgrado::create([
-                    'id_cotizacion'=>$cotizacion->id,
-                ]);
+        if($cotizacion->id_medio != $request->edit_medio){
+            $cotizacion->id_medio = $request->edit_medio;
+        }
+
+        if($cotizacion->id_modalidad != $request->edit_modalidades){
+            $cotizacion->id_modalidad = $request->edit_modalidades;
+        }
+        
+        if($cotizacion->tema != $request->edit_tema){
+            $cotizacion->tema = $request->edit_tema;
+        }
+
+        if($cotizacion->avance != $request->edit_avance){
+            $cotizacion->avance = $request->edit_avance;
+        }
+
+        if($cotizacion->observaciones != $request->edit_observacion){
+            $cotizacion->observaciones = $request->edit_observacion;
+        }
+
+        if($cotizacion->validez != $request->edit_validez){
+            $cotizacion->validez = $request->edit_validez;
+        }
+
+        if($cotizacion->id_nivel_academico > 2){
+
+            $universidad = Universidad::firstOrCreate(['nombre'=>$request->edit_universidad]);
+
+            if($cotizacion->cotizacionUniversitaria->id_universidad != $universidad->id){
+
+                $cotizacion->cotizacionUniversitaria->id_universidad = $universidad->id;
             }
-        }else{
-            if($request->edit_nivel < 6){
-                $cotizacion_posgrado = CotizacionPosgrado::where('id_cotizacion',$cotizacion->id)->first();
-                $cotizacion_posgrado->delete();
-                CotizacionGeneral::create([
-                    'id_cotizacion'=>$cotizacion->id,
-                    'id_facultad'=>$request->edit_facultad,
-                    'id_carrera'=>$request->edit_carrera,
+
+
+            $profesion = Profesion::firstOrCreate(['nombre'=>$request->edit_profesion]);
+
+            if($cotizacion->cotizacionUniversitaria->id_profesion != $profesion->id){
+
+                $cotizacion->cotizacionUniversitaria->id_profesion = $profesion->id;
+            }
+
+
+            if($cotizacion->id_nivel_academico < 5){
+
+                if($cotizacion->cotizacionUniversitaria->cotizacionGeneral->id_facultad != $request->edit_facultades){
+
+                    $cotizacion->cotizacionUniversitaria->cotizacionGeneral->id_facultad = $request->edit_facultades;
+                }
+
+                $carrera = Carrera::where('nombre',$request->edit_carreras)->firstOr(function()use($request){
+                    Carrera::create([
+                        'nombre' => $request->edit_carreras,
+                        'id_facultad' => $request->edit_carreras,
+                    ]);
+                });
+
+                if($cotizacion->cotizacionUniversitaria->cotizacionGeneral->id_carrera != $carrera->id){
+
+                    $cotizacion->cotizacionUniversitaria->cotizacionGeneral->id_carrera = $carrera->id;
+                }
+                
+                
+            }else if($cotizacion->id_nivel_academico < 9){
+                $posgrado = Posgrado::firstOrCreate([
+                    'nombre' => $request->edit_posgrado
                 ]);
-                $facultad_back = $request->edit_facultad;
-                $carrera_back = $request->edit_carrera;
-            }else{
-                $facultad_back = "";
-                $carrera_back = "";
+                if($cotizacion->cotizacionUniversitaria->cotizacionPosgrado->id_posgrado != $posgrado->id){
+
+                    $cotizacion->cotizacionUniversitaria->cotizacionPosgrado->id_posgrado = $posgrado->id;
+                }
+                
+
+
             }
         }
-        if($request->edit_profesion != null){
-            $profesion = Profesion::firstOrCreate(['nombre'=>$request->profesion]);
-            $cotizacion->id_profesion = $request->edit_profesion; 
-        }
-        $cotizacion->id_tipo_cotizacion = $request->edit_tipo_cotizacion; 
-        $cotizacion->id_modalidad = $request->edit_modalidad; 
-        $cotizacion->id_medio = $request->edit_medio; 
-        $cotizacion->avance = $request->edit_avance; 
-        $cotizacion->validez = $request->edit_validez; 
-        $cotizacion->tema = $request->edit_tema; 
-        $cotizacion->observaciones = $request->edit_observacion;
+
         $cotizacion->push();
-
+/*
         return redirect()->back()->with([
             'edit_nombre' => $request->edit_nombre,
             'edit_direccion' => $request->edit_direccion,
@@ -201,6 +235,7 @@ class CotizacionesController extends Controller
                 'Cotizacion actualizada'
             ],
         ]);
+*/
     }
     public static function buscarCotizaciones(Request $request){
 
@@ -272,6 +307,7 @@ class CotizacionesController extends Controller
         $profesiones = Profesion::all();
         $modalidades = Modalidad::all();
         $medios = Medio::all();
+
         return view('cotizaciones',[
             'cotizaciones' => $cotizaciones,
             'niveles' => $niveles,
@@ -284,6 +320,12 @@ class CotizacionesController extends Controller
             'medios' => $medios
         ]);
 
+    }
+    public function filtrarCarreras(){
+        $id_facultad = $_GET['id'];
+
+        $carreras = Carrera::where('id_facultad',$id_facultad)->get();
+        echo json_encode($carreras);
     }
     public function cotisapp(Request $request){
         $cotizaciones = Cotizacion::find($request->id_cliente);
@@ -315,11 +357,30 @@ class CotizacionesController extends Controller
 
         }
     public function index(){
-        $cotizaciones = Cotizacion::with(['cliente'=>function($query){
+
+        $cotizaciones = Cotizacion::with([
+        'cliente'=>function($query){
             $query->with('persona');
-        },'universidad','nivelAcademico','cotizacionGeneral'=>function($query){
-            $query->with(['carrera','facultad']);
-        },'cotizacionPosgrado','modalidad','posgrado','tipoCotizacion','medio','ficha'])->orderBy('created_at','DESC'); 
+        }
+        ,'nivelAcademico'
+        ,'tipoCotizacion'
+        ,'medio'
+        ,'cotizacionBasica'
+        ,'modalidad'
+        ,'cotizacionUniversitaria'=>function($query){
+            $query->with([
+                'cotizacionGeneral'=>function($query){
+                    $query->with(['carrera','facultad']);
+                }
+                ,'cotizacionPosgrado'=>function($query){
+                    $query->with('posgrado');
+                }
+                ,'profesion'
+                ,'universidad'
+            ]);
+        }
+        ,'ficha'])->orderBy('created_at','DESC'); 
+        
         $auth = Auth::user();
         if($auth->id_nivel == 1){
             $cotizaciones = $cotizaciones->paginate(10);
@@ -329,7 +390,7 @@ class CotizacionesController extends Controller
             })->paginate(10);
 
         }
-
+        
         $niveles = NivelAcademico::all();
         $universidades = Universidad::all();
         $facultades = Facultad::all();
@@ -347,6 +408,7 @@ class CotizacionesController extends Controller
             'mensaje' => null,
         ];
         */
+
         return view('cotizaciones', compact('cotizaciones','niveles','tipos_cotizacion','universidades','facultades','carreras','profesiones','modalidades','medios','posgrados'));
     }
 
@@ -355,7 +417,7 @@ class CotizacionesController extends Controller
         $cotizaciones   = new Cotizacion;
         $busquedacl       = $request->all();
         $resultBusqueda = $cotizaciones->busquedacl($busquedacl['buscarcoti']);
-        dd ($resultBusqueda);
+        
         return view('cotizaciones', compact('resultBusqueda'));
     }
     public function buscar_cotizacion(Request $request)
@@ -372,102 +434,98 @@ class CotizacionesController extends Controller
             return null;
         }
     }
+    private function parseInt($arr){
+        foreach ($arr as $key => $value) {
+            $arr[$key] = (int)$value;
+        }
+        return $arr;
+
+    }
     public function guardarCotizacion(Request $request){
-        $client_error = 'El cliente no se ha cargado correctamente';
-        $msg = [
-            'id_cliente.required'   => $client_error,
-            'id_cliente.exists'     => $client_error,
-            'id_cliente.numeric'    => $client_error, 
-            'direccion.required'    => $client_error.'. Dirección no cargada.',
-            'celular.required'      => $client_error.'. Celular no cargado.',
-            'telefono.required'     => $client_error.'. Teléfono no cargado.',
-            //Listos
-            'nivel.required'        => 'Debe seleccionarse un nivel',
-            'nivel.exists'          => 'El nivel seleccionado no es válido',
-            'universidad.exists'    => 'La universidad seleccionada no es válida',
-            'tipo_cotizacion.exists'=> 'El tipo de cotización seleccionado no es válido',
 
-            'modalidad.exists'      => 'La modalidad seleccionada no es válida',
-            'modalidad.required'    => 'Debe seleccionar una modalidad',
-            'curso.min'             => 'El curso no es válido',
-            'curso.max'             => 'El curso no es válido',
-            'paralelo.in'           => 'El paralelo seleccionado no es válido',
+        Cotizacion::validateCreate($request,Rule::class);
+        
 
-            'validez.numeric'       => 'El campo Validez debe ser numérico',
-            'validez.min'           => 'El campo Validez no debe ser menor a 0',
-            'precio.required'       => 'Debe ingresar un precio',
-            'precio.numeric'        => 'El precio debe ser numérico',
-            'precio.min'            => 'El precio no puede ser menor a 0',
+        $arr_cotizacion = [
+            
+            'id_cliente'            =>$request->id_cliente,
+            'id_nivel_academico'    =>$request->nivel,
+            'id_medio'              =>$request->medio,
+            'curso'                 =>$request->curso,
+            'avance'                =>$request->avance,
+            'precio_total'          =>$request->precio,
+            'validez'               =>$request->validez,
+            'id_modalidad'          =>$request->modalidad,
 
-            'tema.max'              => 'El campo Tema no puede tener más de 65535 caracteres',
-            'observacion.max'       => 'El campo Observación no puede tener más de 65535 caracteres',
-            'medio.exists'          => 'El medio no es válido',
         ];
-        $request->validate([
-            'id_cliente'=> ['required','exists:clientes,id','numeric'],
-            'direccion'    => ['required'],
-            'celular'    => ['required'],
-            'telefono'    => ['required'],
+        $arr_cotizacion = $this->parseInt($arr_cotizacion);
 
-            'nivel'    => ['bail','required','exists:niveles_academicos,id'],
-            'universidad'    => ['exists:universidades,id','nullable'],
-            'tipo_cotizacion'    => ['exists:tipos_cotizacion,id','nullable'],
+        $arr_cotizacion['tema'] = $request->tema;
+        $arr_cotizacion['observaciones'] = $request->observacion;
+        $arr_cotizacion['paralelo'] = $request->paralelo;
 
-            'modalidad'    => ['exists:modalidades,id','required'],
-            'curso'    => ['min:1','max:10','nullable'],
-            'paralelo'    => ['in:A,B,C,D,E,F'],
 
-            'validez'    => ['numeric','nullable','min:1'],
-            'precio'    => ['required','numeric','min:0'],
+        
+        if($request->nivel < 3){
 
-            'tema'    => ['max:65535','nullable'],
-            'observacion'    => ['max:65535','nullable'],
-            'medio'    => ['exists:medios,id','nullable'],
-
-        ],$msg);
-
-        $profesion = $this->firstOrCreate($request->profesion,Profesion::class);
-
-        $posgrado = $this->firstOrCreate($request->posgrado,Posgrado::class);
-        $cotizacion = Cotizacion::create([
-            'id_cliente'=>$request->id_cliente,
-            'id_universidad'=>$request->universidad,
-            'id_nivel_academico'=>$request->nivel,
-            'id_tipo_cotizacion'=>$request->tipo_cotizacion,
-            'id_profesion'=>$profesion->id,
-            'id_posgrado'=>$posgrado->id,
-            'id_modalidad'=>$request->modalidad,
-            'id_medio'=>$request->medio,
-            'tema'=>$request->tema,
-            'avance'=>$request->avance,
-            'observaciones'=>$request->observacion,
-            'precio_total'=>$request->precio,
-            'validez'=>$request->validez,
-        ]);
-        if($request->nivel < 6){
-            $facultad = $this->firstOrCreate($request->facultad,Facultad::class);
-            if($request->carrera!=null){
-                $id_carrera = Carrera::where('id',$request->carrera)->firstOr(function()use($request,$facultad){
-                    
-                        return Carrera::create([
-                            'nombre'=>$request->carrera,
-                            'id_facultad' => $facultad->id,
-                        ]);
-                    }
-                )->id;
-            }else{
-
-                $id_carrera = null;
-            }
-            CotizacionGeneral::create([
-                'id_cotizacion' =>$cotizacion->id,
-                'id_facultad'=>$facultad->id,
-                'id_carrera'=>$id_carrera
-            ]);
+            $arr_cotizacion['id_tipo_cotizacion']=2;
         }else{
-            CotizacionPosgrado::create([
-               'id_cotizacion' => $cotizacion->id
+
+            $arr_cotizacion['id_tipo_cotizacion']=$request->tipo_cotizacion;
+        }
+        
+        $cotizacion = Cotizacion::create($arr_cotizacion);
+
+        //Si el nivel es 1 o 2 es una cotización basica
+
+        if($request->nivel < 3){
+            CotizacionBasica::create([
+                'id_cotizacion' => $cotizacion->id
             ]);
+
+            
+        }else{
+            $profesion = $this->firstOrCreate($request->profesion,Profesion::class);
+
+            $universidad = $this->firstOrCreate($request->universidad,Universidad::class);
+            $cotizacion_universitaria = CotizacionUniversitaria::create([
+                'id_cotizacion' => $cotizacion->id,
+                'id_universidad'=> $universidad == null ? null : $universidad->id,
+                'id_profesion'=>$profesion == null ? null : $profesion->id,
+            ]);
+
+            //Si el nivel es 3 o 4 es una cotizacion universitaria general
+            if($request->nivel < 5){
+                if($request->carrera!=null){
+                    $id_carrera = Carrera::where('nombre',$request->carrera)->firstOr(function()use($request){
+                        
+                            return Carrera::create([
+                                'nombre'=>$request->carrera,
+                                'id_facultad' => $request->facultad,
+                            ]);
+                        }
+                    )->id;
+                }else{
+
+                    $id_carrera = null;
+                }
+                
+                CotizacionGeneral::create([
+                    'id_cotizacion_universitaria' =>$cotizacion_universitaria->id,
+                    'id_facultad'=>$request->facultad,
+                    'id_carrera'=>$id_carrera
+                ]);
+
+            //Si el nivel es 5 o más es una cotizacion universitaria posgrado
+            }else{
+                $posgrado = $this->firstOrCreate($request->posgrado,Posgrado::class);
+
+                CotizacionPosgrado::create([
+                    'id_posgrado'=>$posgrado->id,
+                    'id_cotizacion_universitaria' => $cotizacion_universitaria->id
+                ]);
+            }
+
         }
         return redirect()->back()->with([
             'messages'=>[

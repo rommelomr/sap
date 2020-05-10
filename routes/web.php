@@ -20,16 +20,17 @@ Route::get('users', 'UsersController@index')->name('users')->middleware('roles:1
 Route::post('login_user', 'Auth\LoginController@login')->name('login_user');
 
 // Cotizaciones
-Route::get('cotizaciones', 'CotizacionesController@index')->name('cotizaciones');
-Route::get('buscarCotizaciones', 'CotizacionesController@buscarCotizaciones')->name('buscarCotizaciones');
-Route::get('cotizacion/{id}', 'CotizacionesController@buscarCotizacion')->name('cotizacion');
+Route::get('filtrar_carreras', 'CotizacionesController@filtrarCarreras')->name('filtrar_carreras')->middleware('auth');
+Route::get('cotizaciones', 'CotizacionesController@index')->name('cotizaciones')->middleware('auth');
+Route::get('buscarCotizaciones', 'CotizacionesController@buscarCotizaciones')->middleware('auth')->name('buscarCotizaciones');
+Route::get('cotizacion/{id}', 'CotizacionesController@buscarCotizacion')->middleware('auth')->name('cotizacion');
 
-Route::post('modificar_cotizacion', 'CotizacionesController@modificarCotizacion')->name('modificar_cotizacion');
+Route::post('modificar_cotizacion', 'CotizacionesController@modificarCotizacion')->middleware('roles:1')->name('modificar_cotizacion');
 Route::post('guardarCotizacion', 'CotizacionesController@guardarCotizacion')->name('guardarCotizacion')->middleware('roles:1');
 
 //Fichas
-Route::get('fichas_academicas', 'FichasAcademicasController@index')->name('fichas_academicas');
-Route::get('fichas_academicas/{id}', 'FichasAcademicasController@verFicha')->name('ver_ficha');
+Route::get('fichas_academicas', 'FichasAcademicasController@index')->middleware('auth')->name('fichas_academicas');
+Route::get('fichas_academicas/{id}', 'FichasAcademicasController@verFicha')->middleware('auth')->name('ver_ficha');
 Route::get('fichas_economica/{id}', 'FichasEconomicasController@verFicha')->name('ficha_economica')->middleware('roles:1');
 
 Route::post('crear_ficha', 'FichasAcademicasController@crearFicha')->name('crear_ficha')->middleware('roles:1');

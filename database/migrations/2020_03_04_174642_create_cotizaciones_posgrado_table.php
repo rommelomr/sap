@@ -15,8 +15,12 @@ class CreateCotizacionesPosgradoTable extends Migration
     {
         Schema::create('cotizaciones_posgrado', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('id_cotizacion')->nullable();
-            $table->foreign('id_cotizacion')->references('id')->on('cotizaciones')->onDelete('cascade');
+
+            $table->unsignedBigInteger('id_cotizacion_universitaria')->nullable();
+            $table->foreign('id_cotizacion_universitaria')->references('id')->on('cotizaciones_universitarias')->onDelete('cascade');
+            
+            $table->unsignedBigInteger('id_posgrado')->nullable();
+            $table->foreign('id_posgrado')->references('id')->on('posgrados')->onDelete('cascade');
             $table->timestamps();
         });
     }

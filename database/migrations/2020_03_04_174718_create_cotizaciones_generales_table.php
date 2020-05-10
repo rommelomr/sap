@@ -15,13 +15,16 @@ class CreateCotizacionesGeneralesTable extends Migration
     {
         Schema::create('cotizaciones_generales', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('id_cotizacion')->nullable();
-            $table->foreign('id_cotizacion')->references('id')->on('cotizaciones')->onDelete('cascade');
+            
+            $table->unsignedBigInteger('id_cotizacion_universitaria')->nullable();
+            $table->foreign('id_cotizacion_universitaria')->references('id')->on('cotizaciones_universitarias')->onDelete('cascade');
 
             $table->unsignedBigInteger('id_facultad')->nullable();
             $table->foreign('id_facultad')->references('id')->on('facultades')->onDelete('cascade');
+
             $table->unsignedBigInteger('id_carrera')->nullable();
             $table->foreign('id_carrera')->references('id')->on('carreras')->onDelete('cascade');
+            
             $table->timestamps();
         });
     }

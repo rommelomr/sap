@@ -45,11 +45,11 @@ INSERT INTO `universidades` (nombre) VALUES
 ('Universidad Técnica de Oruro'),
 ('Universidad Tomás Frías'),
 ('Universidad Juan Misael Saracho'),
-('Universidad Autónoma de Beni "José Ballivián"'),
+('Universidad Autónoma de Beni José Ballivián'),
 ('Universidad Nacional de Siglo XX'),
 ('Universidad Amazónica de Pando'),
 ('Escuela Militar de Ingeniería'),
-('Universidad Católica Boliviana "San Pablo" '),
+('Universidad Católica Boliviana San Pablo'),
 ('Universidad Privada del Valle'),
 ('Universidad de Aquino Bolivia - UDABOL'),
 ('Universidad Nur'),
@@ -188,7 +188,6 @@ INSERT INTO `niveles_academicos` (nombre) VALUES
 ('Técnico Medio'),
 ('Técnico Superior'),
 ('Licenciatura'),
-('Ingeniería'),
 ('Diplomado'),
 ('Especialidad'),
 ('Doctorado'),
@@ -203,48 +202,14 @@ INSERT INTO `profesiones` (nombre) VALUES
 ('Traumatólogo'),
 ('Cirujano'),
 ('Asistente Contable');
+
 INSERT INTO `posgrados` (nombre) VALUES
 ('Desarrollo web');
 
-INSERT INTO `cotizaciones` (id_posgrado, id_profesion,created_at, updated_at, id_tipo_cotizacion, id_nivel_academico, numero_cotizacion, id_cliente, id_universidad, id_modalidad, id_medio, tema, avance, observaciones, precio_total, validez) VALUES
-(1,1,'2020-01-01','2020-02-01',1,1,1,1, 1, 5, 1,'tema 6', 6, 'Observacion 6', 16, 10),
-(1,2,'2020-01-01','2020-02-01',2,6,2,2, 2, 6, 2,'tema 7', 7, 'Observacion 7', 17, 10),
-(1,3,'2020-01-01','2020-02-01',1,7,3,3, 3, 7, 3,'tema 8', 8, 'Observacion 8', 18, 10),
-(1,4,'2020-01-01','2020-02-01',2,8,4,4, 4, 8, 4,'tema 9', 1, 'Observacion 9', 19, 10),
-(1,5,'2020-01-01','2020-02-01',1,5,5,5, 5, 1, 5,'tema 10',2, 'Observacion 0', 10, 10),
-(1,6,'2020-01-01','2020-02-01',2,6,6,1, 6, 2, 1,'tema 6', 3, 'Observacion 6', 16, 10),
-(1,7,'2020-01-01','2020-02-01',1,7,7,2, 7, 3, 3,'tema 7', 4, 'Observacion 7', 17, 10),
-(1,1,'2020-01-01','2020-02-01',2,8,8,3, 8, 4, 4,'tema 8', 5, 'Observacion 8', 18, 10),
-(1,2,'2020-01-01','2020-02-01',1,1,8,4, 1, 5, 5,'tema 9', 6, 'Observacion 9', 19, 10),
-(1,3,'2020-01-01','2020-02-01',2,9,10,5,2, 6, 1,'tema 10',7, 'Observacion 0', 10, 10);
-
-INSERT INTO `cotizaciones_generales` (id_cotizacion, id_facultad, id_carrera) VALUES
-(1,1,1),
-(5,2,2),
-(6,3,3),
-(7,4,4),
-(8,1,1),
-(9,2,2);
-
-INSERT INTO `cotizaciones_posgrado` (id_cotizacion) VALUES
-(2),
-(3),
-(4),
-(10);
 INSERT INTO `tipos_contrato` (nombre) VALUES
 ('Estudiantes Universitarios'),
 ('Egresados'),
 ('Diplomados y Maestrias');
-
-INSERT INTO `contratos` (`id`, `numero_contrato`, `id_asesor`, `id_cliente`, `id_tipo_contrato`, `monto`, `daf`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 1, 1, 100, 2,'2020-01-01','2020-02-01'),
-(2, 2, 2, 2, 2, 50, 3, '2020-01-01','2020-02-01'),
-(3, 3, 3, 3, 3, 150, 4, '2020-01-01','2020-02-01');
-
-INSERT INTO `fichas_academicas` (id_cliente,id_asesor,id_contrato,id_cotizacion,fecha_inicio,plazo,fecha_fin,id_etapa,created_at,updated_at,estado) VALUES
-(1,1,1,1,'2020-02-16',51,'2020-05-16',1,NULL,NULL,0),
-(2,2,2,2,'2020-02-16',60,'2020-06-16',2, NULL,NULL,0),
-(3,3,3,3,'2020-02-16',70,'2020-07-16',3, NULL,NULL,0);
 
 INSERT INTO `tipos_ingreso` (nombre) VALUES
 ('Pagos de cliente'),
@@ -261,84 +226,3 @@ INSERT INTO `tipos_egreso` (nombre) VALUES
 ('Gastos'),
 ('Planillas de sueldos'),
 ('Otros');
-
-INSERT INTO `ingresos` (id_tipo_ingreso,concepto, id_tipo_pago, numero_recibo, monto) VALUES
-(1,'concepto de ingreso',1,1,200),
-(2,'concepto de ingreso',1,2,400),
-(2,'concepto de ingreso',1,3,400),
-(2,'concepto de ingreso',1,4,400),
-(2,'concepto de ingreso',1,5,400),
-(2,'concepto de ingreso',1,6,400),
-(2,'concepto de ingreso',1,7,400),
-(2,'concepto de ingreso',1,8,400),
-(2,'concepto de ingreso',1,9,400),
-(2,'concepto de ingreso',1,10,400),
-(2,'concepto de ingreso',1,11,400),
-(2,'concepto de ingreso',1,12,400),
-(2,'concepto de ingreso',1,13,400),
-(2,'concepto de ingreso',1,14,400),
-(2,'concepto de ingreso',1,15,300);
-
-INSERT INTO `egresos` (id_tipo_pago,id_tipo_egreso, concepto, numero_recibo, monto) VALUES
-(1,1,'concepto de egreso',16,500),
-(1,2,'concepto de egreso',17,400),
-(1,2,'concepto de egreso',18,400),
-(1,2,'concepto de egreso',19,400),
-(1,2,'concepto de egreso',20,400),
-(1,2,'concepto de egreso',21,400),
-(1,2,'concepto de egreso',22,400),
-(1,2,'concepto de egreso',24,400),
-(1,2,'concepto de egreso',25,400),
-(1,2,'concepto de egreso',26,400),
-(1,2,'concepto de egreso',27,400),
-(1,2,'concepto de egreso',28,400),
-(1,2,'concepto de egreso',29,400),
-(1,2,'concepto de egreso',30,400);
-
-INSERT INTO `fichas_economicas` (id_cotizacion, id_contrato,created_at,updated_at) VALUES
-(1,1,'2020-02-01','2020-03-01'),
-(2,2,'2020-02-01','2020-03-01'),
-(3,3,'2020-02-01','2020-03-01');
-
-INSERT INTO `pagos_asesor` (id_modalidad,id_usuario,id_asesor,id_egreso, id_ficha_economica,created_at,updated_at) VALUES
-(1,1,1,1,1,'2020-02-01','2020-03-01'),
-(2,1,2,2,2,'2020-02-01','2020-03-01'),
-(2,1,2,3,2,'2020-02-01','2020-03-01'),
-(2,1,2,4,2,'2020-02-01','2020-03-01'),
-(2,1,2,5,2,'2020-02-01','2020-03-01'),
-(2,1,2,6,2,'2020-02-01','2020-03-01'),
-(2,1,2,7,2,'2020-02-01','2020-03-01'),
-(2,1,2,8,2,'2020-02-01','2020-03-01'),
-(2,1,2,9,2,'2020-02-01','2020-03-01'),
-(2,1,2,10,2,'2020-02-01','2020-03-01'),
-(2,1,2,11,2,'2020-02-01','2020-03-01'),
-(2,1,2,12,2,'2020-02-01','2020-03-01'),
-(2,1,2,13,2,'2020-02-01','2020-03-01'),
-(2,1,2,14,2,'2020-02-01','2020-03-01');
-
-INSERT INTO `pagos_cliente` (id_usuario,id_modalidad,id_ingreso, id_ficha_economica,created_at,updated_at) VALUES
-(1,1,1,1,'2020-02-01','2020-03-01'),
-(1,2,2,2,'2020-02-01','2020-03-01'),
-(1,2,3,2,'2020-02-01','2020-03-01'),
-(1,2,4,2,'2020-02-01','2020-03-01'),
-(1,2,5,2,'2020-02-01','2020-03-01'),
-(1,2,6,2,'2020-02-01','2020-03-01'),
-(1,2,7,2,'2020-02-01','2020-03-01'),
-(1,2,8,2,'2020-02-01','2020-03-01'),
-(1,2,9,2,'2020-02-01','2020-03-01'),
-(1,2,10,2,'2020-02-01','2020-03-01'),
-(1,2,11,2,'2020-02-01','2020-03-01'),
-(1,2,12,2,'2020-02-01','2020-03-01'),
-(1,2,13,2,'2020-02-01','2020-03-01'),
-(1,2,14,2,'2020-02-01','2020-03-01');
-
-INSERT INTO `caja_chica` (monto, created_at, updated_at) VALUES
-(4000.18,'2020-03-13','2020-03-13');
-
-INSERT INTO `movimientos` (id_usuario,tipo,concepto,monto,created_at,updated_at) values 
-(1,1,'concepto ingreso',1000,'2020-03-13','2020-03-13'),
-(1,1,'concepto ingreso',1000,'2020-03-13','2020-03-13'),
-(1,1,'concepto ingreso',1000,'2020-03-13','2020-03-13'),
-(1,1,'concepto ingreso',1000,'2020-03-13','2020-03-13'),
-(1,2,'concepto egreso',1000,'2020-03-13','2020-03-13'),
-(1,1,'concepto ingreso',1000.18,'2020-03-13','2020-03-13');
