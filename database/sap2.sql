@@ -1,3 +1,6 @@
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
 CREATE TABLE `asesores` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `id_usuario` bigint(20) UNSIGNED NOT NULL,
@@ -29,13 +32,6 @@ CREATE TABLE `caja_chica` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-
-
-
-INSERT INTO `caja_chica` (`id`, `monto`, `created_at`, `updated_at`) VALUES
-(1, 4000.18, '2020-03-13 04:00:00', '2020-03-13 04:00:00');
 
 
 
@@ -165,15 +161,6 @@ CREATE TABLE `contratos` (
 
 
 
-INSERT INTO `contratos` (`id`, `numero_contrato`, `id_asesor`, `id_cliente`, `id_tipo_contrato`, `monto`, `daf`, `created_at`, `updated_at`) VALUES
-(1, '1', 1, 1, 1, 100.00, 2, '2020-01-01 04:00:00', '2020-02-01 04:00:00'),
-(2, '2', 2, 2, 2, 50.00, 3, '2020-01-01 04:00:00', '2020-02-01 04:00:00'),
-(3, '3', 3, 3, 3, 150.00, 4, '2020-01-01 04:00:00', '2020-02-01 04:00:00');
-
-
-
-
-
 
 
 CREATE TABLE `cotizaciones` (
@@ -184,6 +171,7 @@ CREATE TABLE `cotizaciones` (
   `curso` tinyint(4) DEFAULT NULL,
   `paralelo` char(1) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `id_medio` bigint(20) UNSIGNED DEFAULT NULL,
+  `id_modalidad` bigint(20) UNSIGNED DEFAULT NULL,
   `tema` text COLLATE utf8mb4_unicode_ci,
   `avance` int(11) DEFAULT NULL,
   `observaciones` text COLLATE utf8mb4_unicode_ci,
@@ -192,22 +180,6 @@ CREATE TABLE `cotizaciones` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-
-
-
-INSERT INTO `cotizaciones` (`id`, `id_cliente`, `id_nivel_academico`, `id_tipo_cotizacion`, `curso`, `paralelo`, `id_medio`, `tema`, `avance`, `observaciones`, `precio_total`, `validez`, `created_at`, `updated_at`) VALUES
-(50, 1, 1, 1, 1, 'A', 1, 'tema 6', 6, 'Observacion 6', 16, 10, '2020-01-01 04:00:00', '2020-02-01 04:00:00'),
-(51, 2, 6, 2, 2, 'B', 2, 'tema 7', 7, 'Observacion 7', 17, 10, '2020-01-01 04:00:00', '2020-02-01 04:00:00'),
-(52, 3, 7, 1, 3, 'C', 3, 'tema 8', 8, 'Observacion 8', 18, 10, '2020-01-01 04:00:00', '2020-02-01 04:00:00'),
-(53, 4, 8, 2, 4, 'D', 4, 'tema 9', 1, 'Observacion 9', 19, 10, '2020-01-01 04:00:00', '2020-02-01 04:00:00'),
-(54, 5, 5, 1, 5, 'E', 5, 'tema 10', 2, 'Observacion 0', 10, 10, '2020-01-01 04:00:00', '2020-02-01 04:00:00'),
-(55, 1, 6, 2, 6, 'F', 1, 'tema 6', 3, 'Observacion 6', 16, 10, '2020-01-01 04:00:00', '2020-02-01 04:00:00'),
-(56, 2, 7, 1, 7, 'A', 3, 'tema 7', 4, 'Observacion 7', 17, 10, '2020-01-01 04:00:00', '2020-02-01 04:00:00'),
-(57, 3, 8, 2, 8, 'B', 4, 'tema 8', 5, 'Observacion 8', 18, 10, '2020-01-01 04:00:00', '2020-02-01 04:00:00'),
-(58, 4, 1, 1, 9, 'C', 5, 'tema 9', 6, 'Observacion 9', 19, 10, '2020-01-01 04:00:00', '2020-02-01 04:00:00'),
-(59, 5, 9, 2, 10, 'D', 2, 'tema 10', 7, 'Observacion 0', 10, 10, '2020-01-01 04:00:00', '2020-02-01 04:00:00');
 
 
 
@@ -241,18 +213,6 @@ CREATE TABLE `cotizaciones_generales` (
 
 
 
-INSERT INTO `cotizaciones_generales` (`id`, `id_cotizacion_universitaria`, `id_facultad`, `id_carrera`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 1, NULL, NULL),
-(2, 5, 2, 2, NULL, NULL),
-(3, 6, 3, 3, NULL, NULL),
-(4, 7, 4, 4, NULL, NULL),
-(5, 8, 1, 1, NULL, NULL),
-(6, 9, 2, 2, NULL, NULL);
-
-
-
-
-
 
 
 CREATE TABLE `cotizaciones_posgrado` (
@@ -267,16 +227,6 @@ CREATE TABLE `cotizaciones_posgrado` (
 
 
 
-INSERT INTO `cotizaciones_posgrado` (`id`, `id_cotizacion_universitaria`, `id_posgrado`, `created_at`, `updated_at`) VALUES
-(1, 2, 1, NULL, NULL),
-(2, 3, 1, NULL, NULL),
-(3, 4, 1, NULL, NULL),
-(4, 10, 1, NULL, NULL);
-
-
-
-
-
 
 
 CREATE TABLE `cotizaciones_universitarias` (
@@ -284,26 +234,9 @@ CREATE TABLE `cotizaciones_universitarias` (
   `id_cotizacion` bigint(20) UNSIGNED DEFAULT NULL,
   `id_universidad` bigint(20) UNSIGNED DEFAULT NULL,
   `id_profesion` bigint(20) UNSIGNED DEFAULT NULL,
-  `id_modalidad` bigint(20) UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-
-
-
-INSERT INTO `cotizaciones_universitarias` (`id`, `id_cotizacion`, `id_universidad`, `id_profesion`, `id_modalidad`, `created_at`, `updated_at`) VALUES
-(1, 50, 1, 1, 5, NULL, NULL),
-(2, 51, 2, 2, 6, NULL, NULL),
-(3, 52, 3, 3, 7, NULL, NULL),
-(4, 53, 4, 4, 8, NULL, NULL),
-(5, 54, 5, 5, 1, NULL, NULL),
-(6, 55, 6, 6, 2, NULL, NULL),
-(7, 56, 7, 7, 3, NULL, NULL),
-(8, 57, 8, 1, 4, NULL, NULL),
-(9, 58, 1, 2, 5, NULL, NULL),
-(10, 59, 6, 3, 1, NULL, NULL);
 
 
 
@@ -321,26 +254,6 @@ CREATE TABLE `egresos` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-
-
-
-INSERT INTO `egresos` (`id`, `id_tipo_egreso`, `id_tipo_pago`, `concepto`, `numero_recibo`, `monto`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 'concepto de egreso', 16, 500.00, NULL, NULL),
-(2, 2, 1, 'concepto de egreso', 17, 400.00, NULL, NULL),
-(3, 2, 1, 'concepto de egreso', 18, 400.00, NULL, NULL),
-(4, 2, 1, 'concepto de egreso', 19, 400.00, NULL, NULL),
-(5, 2, 1, 'concepto de egreso', 20, 400.00, NULL, NULL),
-(6, 2, 1, 'concepto de egreso', 21, 400.00, NULL, NULL),
-(7, 2, 1, 'concepto de egreso', 22, 400.00, NULL, NULL),
-(8, 2, 1, 'concepto de egreso', 24, 400.00, NULL, NULL),
-(9, 2, 1, 'concepto de egreso', 25, 400.00, NULL, NULL),
-(10, 2, 1, 'concepto de egreso', 26, 400.00, NULL, NULL),
-(11, 2, 1, 'concepto de egreso', 27, 400.00, NULL, NULL),
-(12, 2, 1, 'concepto de egreso', 28, 400.00, NULL, NULL),
-(13, 2, 1, 'concepto de egreso', 29, 400.00, NULL, NULL),
-(14, 2, 1, 'concepto de egreso', 30, 400.00, NULL, NULL);
 
 
 
@@ -424,15 +337,6 @@ CREATE TABLE `fichas_academicas` (
 
 
 
-INSERT INTO `fichas_academicas` (`id`, `id_cliente`, `id_asesor`, `id_contrato`, `id_cotizacion`, `plazo`, `fecha_inicio`, `fecha_fin`, `id_etapa`, `estado`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 1, 50, 51, '2020-02-16', '2020-05-16', 1, 0, NULL, NULL),
-(2, 2, 2, 2, 51, 60, '2020-02-16', '2020-06-16', 2, 0, NULL, NULL),
-(3, 3, 3, 3, 52, 70, '2020-02-16', '2020-07-16', 3, 0, NULL, NULL);
-
-
-
-
-
 
 
 CREATE TABLE `fichas_economicas` (
@@ -442,15 +346,6 @@ CREATE TABLE `fichas_economicas` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-
-
-
-INSERT INTO `fichas_economicas` (`id`, `id_cotizacion`, `id_contrato`, `created_at`, `updated_at`) VALUES
-(1, 50, 1, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(2, 51, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(3, 52, 3, '2020-02-01 04:00:00', '2020-03-01 04:00:00');
 
 
 
@@ -481,27 +376,6 @@ CREATE TABLE `ingresos` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-
-
-
-INSERT INTO `ingresos` (`id`, `id_tipo_ingreso`, `concepto`, `id_tipo_pago`, `numero_recibo`, `monto`, `created_at`, `updated_at`) VALUES
-(1, 1, 'concepto de ingreso', 1, 1, 200.00, NULL, NULL),
-(2, 2, 'concepto de ingreso', 1, 2, 400.00, NULL, NULL),
-(3, 2, 'concepto de ingreso', 1, 3, 400.00, NULL, NULL),
-(4, 2, 'concepto de ingreso', 1, 4, 400.00, NULL, NULL),
-(5, 2, 'concepto de ingreso', 1, 5, 400.00, NULL, NULL),
-(6, 2, 'concepto de ingreso', 1, 6, 400.00, NULL, NULL),
-(7, 2, 'concepto de ingreso', 1, 7, 400.00, NULL, NULL),
-(8, 2, 'concepto de ingreso', 1, 8, 400.00, NULL, NULL),
-(9, 2, 'concepto de ingreso', 1, 9, 400.00, NULL, NULL),
-(10, 2, 'concepto de ingreso', 1, 10, 400.00, NULL, NULL),
-(11, 2, 'concepto de ingreso', 1, 11, 400.00, NULL, NULL),
-(12, 2, 'concepto de ingreso', 1, 12, 400.00, NULL, NULL),
-(13, 2, 'concepto de ingreso', 1, 13, 400.00, NULL, NULL),
-(14, 2, 'concepto de ingreso', 1, 14, 400.00, NULL, NULL),
-(15, 2, 'concepto de ingreso', 1, 15, 300.00, NULL, NULL);
 
 
 
@@ -630,18 +504,6 @@ CREATE TABLE `movimientos` (
 
 
 
-INSERT INTO `movimientos` (`id`, `id_usuario`, `tipo`, `monto`, `concepto`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 1000, 'concepto ingreso', '2020-03-13 04:00:00', '2020-03-13 04:00:00'),
-(2, 1, 1, 1000, 'concepto ingreso', '2020-03-13 04:00:00', '2020-03-13 04:00:00'),
-(3, 1, 1, 1000, 'concepto ingreso', '2020-03-13 04:00:00', '2020-03-13 04:00:00'),
-(4, 1, 1, 1000, 'concepto ingreso', '2020-03-13 04:00:00', '2020-03-13 04:00:00'),
-(5, 1, 2, 1000, 'concepto egreso', '2020-03-13 04:00:00', '2020-03-13 04:00:00'),
-(6, 1, 1, 1000, 'concepto ingreso', '2020-03-13 04:00:00', '2020-03-13 04:00:00');
-
-
-
-
-
 
 
 CREATE TABLE `niveles` (
@@ -681,11 +543,10 @@ INSERT INTO `niveles_academicos` (`id`, `nombre`, `created_at`, `updated_at`) VA
 (2, 'Técnico Medio', NULL, NULL),
 (3, 'Técnico Superior', NULL, NULL),
 (4, 'Licenciatura', NULL, NULL),
-(5, 'Ingeniería', NULL, NULL),
-(6, 'Diplomado', NULL, NULL),
-(7, 'Especialidad', NULL, NULL),
-(8, 'Doctorado', NULL, NULL),
-(9, 'Maestría', NULL, NULL);
+(5, 'Diplomado', NULL, NULL),
+(6, 'Especialidad', NULL, NULL),
+(7, 'Doctorado', NULL, NULL),
+(8, 'Maestría', NULL, NULL);
 
 
 
@@ -722,26 +583,6 @@ CREATE TABLE `pagos_asesor` (
 
 
 
-INSERT INTO `pagos_asesor` (`id`, `id_usuario`, `id_asesor`, `id_modalidad`, `id_egreso`, `id_ficha_economica`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 1, 1, 1, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(2, 1, 2, 2, 2, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(3, 1, 2, 2, 3, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(4, 1, 2, 2, 4, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(5, 1, 2, 2, 5, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(6, 1, 2, 2, 6, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(7, 1, 2, 2, 7, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(8, 1, 2, 2, 8, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(9, 1, 2, 2, 9, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(10, 1, 2, 2, 10, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(11, 1, 2, 2, 11, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(12, 1, 2, 2, 12, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(13, 1, 2, 2, 13, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(14, 1, 2, 2, 14, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00');
-
-
-
-
-
 
 
 CREATE TABLE `pagos_cliente` (
@@ -753,26 +594,6 @@ CREATE TABLE `pagos_cliente` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-
-
-
-INSERT INTO `pagos_cliente` (`id`, `id_ingreso`, `id_usuario`, `id_modalidad`, `id_ficha_economica`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 1, 1, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(2, 2, 1, 2, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(3, 3, 1, 2, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(4, 4, 1, 2, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(5, 5, 1, 2, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(6, 6, 1, 2, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(7, 7, 1, 2, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(8, 8, 1, 2, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(9, 9, 1, 2, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(10, 10, 1, 2, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(11, 11, 1, 2, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(12, 12, 1, 2, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(13, 13, 1, 2, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00'),
-(14, 14, 1, 2, 2, '2020-02-01 04:00:00', '2020-03-01 04:00:00');
 
 
 
@@ -1010,11 +831,11 @@ INSERT INTO `universidades` (`id`, `nombre`, `created_at`, `updated_at`) VALUES
 (6, 'Universidad Técnica de Oruro', NULL, NULL),
 (7, 'Universidad Tomás Frías', NULL, NULL),
 (8, 'Universidad Juan Misael Saracho', NULL, NULL),
-(9, 'Universidad Autónoma de Beni \"José Ballivián\"', NULL, NULL),
+(9, 'Universidad Autónoma de Beni José Ballivián', NULL, NULL),
 (10, 'Universidad Nacional de Siglo XX', NULL, NULL),
 (11, 'Universidad Amazónica de Pando', NULL, NULL),
 (12, 'Escuela Militar de Ingeniería', NULL, NULL),
-(13, 'Universidad Católica Boliviana \"San Pablo\" ', NULL, NULL),
+(13, 'Universidad Católica Boliviana San Pablo', NULL, NULL),
 (14, 'Universidad Privada del Valle', NULL, NULL),
 (15, 'Universidad de Aquino Bolivia - UDABOL', NULL, NULL),
 (16, 'Universidad Nur', NULL, NULL),
@@ -1115,7 +936,8 @@ ALTER TABLE `cotizaciones`
   ADD KEY `cotizaciones_id_cliente_foreign` (`id_cliente`),
   ADD KEY `cotizaciones_id_nivel_academico_foreign` (`id_nivel_academico`),
   ADD KEY `cotizaciones_id_tipo_cotizacion_foreign` (`id_tipo_cotizacion`),
-  ADD KEY `cotizaciones_id_medio_foreign` (`id_medio`);
+  ADD KEY `cotizaciones_id_medio_foreign` (`id_medio`),
+  ADD KEY `cotizaciones_id_modalidad_foreign` (`id_modalidad`);
 
 
 
@@ -1148,8 +970,7 @@ ALTER TABLE `cotizaciones_universitarias`
   ADD PRIMARY KEY (`id`),
   ADD KEY `cotizaciones_universitarias_id_cotizacion_foreign` (`id_cotizacion`),
   ADD KEY `cotizaciones_universitarias_id_universidad_foreign` (`id_universidad`),
-  ADD KEY `cotizaciones_universitarias_id_profesion_foreign` (`id_profesion`),
-  ADD KEY `cotizaciones_universitarias_id_modalidad_foreign` (`id_modalidad`);
+  ADD KEY `cotizaciones_universitarias_id_profesion_foreign` (`id_profesion`);
 
 
 
@@ -1351,7 +1172,7 @@ ALTER TABLE `asesores`
 
 
 ALTER TABLE `caja_chica`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 
 
@@ -1366,12 +1187,12 @@ ALTER TABLE `clientes`
 
 
 ALTER TABLE `contratos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 
 
 ALTER TABLE `cotizaciones`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 
 
@@ -1381,22 +1202,22 @@ ALTER TABLE `cotizaciones_basicas`
 
 
 ALTER TABLE `cotizaciones_generales`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 
 
 ALTER TABLE `cotizaciones_posgrado`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 
 
 ALTER TABLE `cotizaciones_universitarias`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 
 
 ALTER TABLE `egresos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 
 
@@ -1411,12 +1232,12 @@ ALTER TABLE `facultades`
 
 
 ALTER TABLE `fichas_academicas`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 
 
 ALTER TABLE `fichas_economicas`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 
 
@@ -1426,7 +1247,7 @@ ALTER TABLE `grados`
 
 
 ALTER TABLE `ingresos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 
 
@@ -1446,7 +1267,7 @@ ALTER TABLE `modalidades`
 
 
 ALTER TABLE `movimientos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 
 
@@ -1456,7 +1277,7 @@ ALTER TABLE `niveles`
 
 
 ALTER TABLE `niveles_academicos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 
 
@@ -1466,12 +1287,12 @@ ALTER TABLE `observaciones_ficha`
 
 
 ALTER TABLE `pagos_asesor`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 
 
 ALTER TABLE `pagos_cliente`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 
 
@@ -1560,6 +1381,7 @@ ALTER TABLE `contratos`
 ALTER TABLE `cotizaciones`
   ADD CONSTRAINT `cotizaciones_id_cliente_foreign` FOREIGN KEY (`id_cliente`) REFERENCES `clientes` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `cotizaciones_id_medio_foreign` FOREIGN KEY (`id_medio`) REFERENCES `medios` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `cotizaciones_id_modalidad_foreign` FOREIGN KEY (`id_modalidad`) REFERENCES `modalidades` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `cotizaciones_id_nivel_academico_foreign` FOREIGN KEY (`id_nivel_academico`) REFERENCES `niveles_academicos` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `cotizaciones_id_tipo_cotizacion_foreign` FOREIGN KEY (`id_tipo_cotizacion`) REFERENCES `tipos_cotizacion` (`id`) ON DELETE CASCADE;
 
@@ -1589,7 +1411,6 @@ ALTER TABLE `cotizaciones_posgrado`
 
 ALTER TABLE `cotizaciones_universitarias`
   ADD CONSTRAINT `cotizaciones_universitarias_id_cotizacion_foreign` FOREIGN KEY (`id_cotizacion`) REFERENCES `cotizaciones` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `cotizaciones_universitarias_id_modalidad_foreign` FOREIGN KEY (`id_modalidad`) REFERENCES `modalidades` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `cotizaciones_universitarias_id_profesion_foreign` FOREIGN KEY (`id_profesion`) REFERENCES `profesiones` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `cotizaciones_universitarias_id_universidad_foreign` FOREIGN KEY (`id_universidad`) REFERENCES `universidades` (`id`) ON DELETE CASCADE;
 
@@ -1660,4 +1481,7 @@ ALTER TABLE `pagos_cliente`
 
 ALTER TABLE `users`
   ADD CONSTRAINT `users_id_persona_foreign` FOREIGN KEY (`id_persona`) REFERENCES `personas` (`id`) ON DELETE CASCADE;
+
+
+
 

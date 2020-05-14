@@ -210,7 +210,7 @@ class CotizacionesController extends Controller
         }
 
         $cotizacion->push();
-/*
+
         return redirect()->back()->with([
             'edit_nombre' => $request->edit_nombre,
             'edit_direccion' => $request->edit_direccion,
@@ -235,7 +235,7 @@ class CotizacionesController extends Controller
                 'Cotizacion actualizada'
             ],
         ]);
-*/
+
     }
     public static function buscarCotizaciones(Request $request){
 

@@ -174,10 +174,17 @@ INSERT INTO `modalidades` (nombre) VALUES
 
 INSERT INTO `medios` (nombre) VALUES
 ('Recomendación'),
-('Redes Sociales'),
+('Clientes antiguos'),
+('Amistad'),
+('Redes sociales'),
+('Televisión'),
 ('Periódico'),
-('Clientes Antiguos'),
-('Television');
+('Radio'),
+('Micros'),
+('Banner'),
+('Tarjeta personal'),
+('Afiche'),
+('Volante');
 
 INSERT INTO `tipos_cotizacion` (nombre) VALUES
 ('Semestralizado'),
@@ -190,8 +197,8 @@ INSERT INTO `niveles_academicos` (nombre) VALUES
 ('Licenciatura'),
 ('Diplomado'),
 ('Especialidad'),
-('Doctorado'),
-('Maestría');
+('Maestría'),
+('Doctorado');
 
 
 INSERT INTO `profesiones` (nombre) VALUES

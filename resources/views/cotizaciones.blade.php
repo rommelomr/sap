@@ -337,6 +337,32 @@
 										    	</div>
 										    </datalist>
 										</div>
+										<div class="input-field col s6">
+
+										    <select name="curso" class="browser-default">
+										    	<option disabled selected>Curso</option>
+										    	@for($i = 1; $i<=10; $i++)
+										    		<option
+										    		@if(old('curso')==$i)
+										    			selected
+										    		@endif
+										    		value="{{$i}}">{{$i}}°</option>
+										    	@endfor
+										    </select>
+										</div>
+										</div>
+										<div class="row">
+
+										<div class="input-field col s6">
+											<i class="material-icons prefix">clear_all</i>
+											<input type="text" id="posgrado" name="posgrado" list="dl-posgrados" placeholder="Posgrado" value="{{old('posgrado')}}">
+											<datalist id="dl-posgrados">
+												@forelse($posgrados as $posgrado)
+													<option value="{{$posgrado->nombre}}">{{$posgrado->nombre}}</option>
+												@empty
+												@endforelse
+											</datalist>
+										</div>
 
 										<div class="input-field col s6">
 
@@ -348,7 +374,7 @@
 										    	@endforeach
 										    </datalist>
 										</div>
-										<div class="input-field col s4">
+										<div class="input-field col s6">
 
 										    <select name="modalidad" class="browser-default">
 										    	<option disabled selected>Modalidad</option>
@@ -362,21 +388,15 @@
 										    </select>
 										    
 										</div>
-										<div class="input-field col s4">
-
-										    <select name="curso" class="browser-default">
-										    	<option disabled selected>Curso</option>
-										    	@for($i = 1; $i<=10; $i++)
-										    		<option
-										    		@if(old('curso')==$i)
-										    			selected
-										    		@endif
-										    		value="{{$i}}">{{$i}}°</option>
-										    	@endfor
-										    </select>
-
+										<div class="input-field col s6">
+											<label for="tema">Tema</label>
+											<textarea id="tema" name="tema">{{old('tema')}}</textarea>
 										</div>
-										<div class="input-field col s4">
+										<div class="input-field col s6">
+											<label for="observaciones">Observaciones</label>
+											<textarea id="observaciones" name="observacion">{{old('observacion')}}</textarea>
+										</div>
+										<div class="input-field col s6">
 
 										    <select name="paralelo" class="browser-default">
 										    	<option disabled selected>Paralelo</option>
@@ -391,34 +411,16 @@
 
 										</div>
 										
-										<div class="input-field col s4">
-											<i class="material-icons prefix">clear_all</i>
-											<input type="text" id="posgrado" name="posgrado" list="dl-posgrados" placeholder="Posgrado" value="{{old('posgrado')}}">
-											<datalist id="dl-posgrados">
-												@forelse($posgrados as $posgrado)
-													<option value="{{$posgrado->nombre}}">{{$posgrado->nombre}}</option>
-												@empty
-												@endforelse
-											</datalist>
-										</div>
-										<div class="input-field col s4">
+										<div class="input-field col s6">
 											<i class="material-icons prefix">date_range</i>
 											<label for="validez">Validez</label>
 											<input type="number" id="validez" name="validez" value="{{old('validez')}}">
 										</div>
 										
-										<div class="input-field col s4">
+										<div class="input-field col s6">
 											<i class="material-icons prefix">attach_money</i>
 											<label for="precio">Precio</label>
 											<input type="number" id="precio" name="precio" value="{{old('precio')}}">
-										</div>
-										<div class="input-field col s6">
-											<label for="tema">Tema</label>
-											<textarea id="tema" name="tema">{{old('tema')}}</textarea>
-										</div>
-										<div class="input-field col s6">
-											<label for="observaciones">Observaciones</label>
-											<textarea id="observaciones" name="observacion">{{old('observacion')}}</textarea>
 										</div>
 										<div class="input-field col s6">
 											<i class="material-icons prefix">insert_chart</i>
@@ -516,7 +518,7 @@
 				</div>
 
 				<div class="input-field col s11 l5">
-					<select class="unvaluable browser-default" name="edit_tipo_cotizacion" id="edit_tipo_cotizacion">
+					<select class="select-editable unvaluable browser-default" name="edit_tipo_cotizacion" id="edit_tipo_cotizacion">
 						<option disabled selected>Tipo</option>
 						@foreach($tipos_cotizacion as $tipo_cotizacion)
 							<option class="tipo_cotizacion_option" value="{{$tipo_cotizacion->id}}">{{$tipo_cotizacion->nombre}}</option>
@@ -542,7 +544,7 @@
 					<span class="helper-text">Universidad <a href="#" class="edit" data-brother="edit_universidades">(Editar)</a></span>
 				</div>
 				<div class="input-field col s11 l5">
-					<select class="unvaluable browser-default" name="edit_facultades" id="edit_facultades">
+					<select class="select-editable unvaluable browser-default" name="edit_facultades" id="edit_facultades">
 						<option disabled selected>Facultad</option>
 						@foreach($facultades as $facultad)
 							<option class="facultades_option" value="{{$facultad->id}}">{{$facultad->nombre}}</option>
@@ -569,14 +571,34 @@
 					</datalist>
 					<span class="helper-text">Carrera <a href="#" class="edit" data-brother="edit_carreras">(Editar)</a></span>
 
-
-					<!--select id="edit_carreras" name="edit_carrera">
-						<option disabled selected>Carrera</option>
-
-					</select>
-					<span class="helper-text">Carrera <a href="#" class="edit" data-brother="edit_carreras">(Editar)</a></span-->
 				</div>
 
+				<div class="input-field col s11 l5">
+					<select name="edit_curso" id="edit_curso" class="select-editable browser-default">
+						<option disabled selected>Curso</option>
+						@for($i = 1; $i <= 10; $i++)
+							<option class="curso_option" value="{{$i}}">{{$i}}</option>
+						@endfor
+					</select>
+					<span class="helper-text">Curso</span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="input-field col s11 l5 offset-l1">
+					<i class="material-icons prefix">clear_all</i>
+					<input class="input-editable unvaluable" type="text" list="dl-edit_posgrado" id="edit_posgrado" placeholder="Posgrado" name="edit_posgrado" readonly
+					@if(old('edit_posgrado'))
+						value="{{old('edit_posgrado')}}"
+					@elseif(session('edit_posgrado')) value="{{session('edit_posgrado')}}"
+					@endif
+					>
+					<span class="helper-text">Posgrado <a href="#" class="edit" data-brother="edit_posgrado">(Editar)</a></span>
+					<datalist id="dl-edit_posgrado">
+						@foreach($posgrados as $posgrado)
+							<option value="{{$posgrado->nombre}}">{{$posgrado->nombre}}</option>
+						@endforeach
+					</datalist>
+				</div>	
 				<div class="input-field col s11 l5">
 					<i class="material-icons prefix">assignment_ind</i>
 					<input class="input-editable unvaluable" type="text" list="dl-edit_profesiones" id="edit_profesiones" placeholder="Profesion" name="edit_profesion" readonly
@@ -594,9 +616,8 @@
 				</div>
 			</div>
 			<div class="row">
-
-				<div class="input-field col s11 l4 offset-l1">
-					<select name="edit_modalidades" id="edit_modalidades" class="browser-default">
+				<div class="input-field col s11 l5 offset-l1">
+					<select name="edit_modalidades" id="edit_modalidades" class="select-editable browser-default">
 						<option disabled selected>Modalidad</option>
 						@foreach($modalidades as $modalidad)
 							<option class="modalidades_option" value="{{$modalidad->id}}">{{$modalidad->nombre}}</option>
@@ -604,17 +625,25 @@
 					</select>
 					<span class="helper-text">Modalidad</span>
 				</div>
-				<div class="input-field col s11 l3">
-					<select name="edit_curso" id="edit_curso" class="browser-default">
-						<option disabled selected>Curso</option>
-						@for($i = 1; $i <= 10; $i++)
-							<option class="curso_option" value="{{$i}}">{{$i}}</option>
-						@endfor
-					</select>
-					<span class="helper-text">Curso</span>
+				<div class="input-field col l5 s11">
+					<textarea class="input-editable unvaluable" id="edit_tema" name="edit_tema" readonly>@if(old('edit_tema')){{old('edit_tema')}}@elseif(session('edit_tema')){{session('edit_tema')}}@endif</textarea>
+					<span class="helper-text">Tema <a href="#" class="edit" data-brother="edit_tema">(Editar)</a></span>
 				</div>
-				<div class="input-field col s11 l3">
-					<select name="edit_paralelo" id="edit_paralelo" class="browser-default">
+			</div>
+			<div class="row">
+				<div class="input-field col s11 l5 offset-l1">
+					<textarea class="input-editable unvaluable" id="edit_observaciones" name="edit_observacion" readonly
+
+						@if(old('edit_observacion')) 
+							value="{{old('edit_observacion')}}"
+						@elseif(session('edit_observacion'))
+							value="{{session('edit_observacion')}}
+						@endif
+						></textarea>
+					<span class="helper-text">Observaciones <a href="#" class="edit" data-brother="edit_observaciones">(Editar)</a></span>
+				</div>
+				<div class="input-field col s11 l5">
+					<select name="edit_paralelo" id="edit_paralelo" class="select-editable browser-default">
 						<option disabled selected>Paralelo</option>
 				    	@for($i = 65; $i<=70; $i++)
 				    		<option class="paralelo_option" value="{{chr($i)}}">{{chr($i)}}</option>
@@ -624,24 +653,7 @@
 				</div>
 			</div>
 			<div class="row">
-
-				<div class="input-field col s11 l4 offset-l1">
-					<i class="material-icons prefix">clear_all</i>
-					<input class="input-editable unvaluable" type="text" list="dl-edit_posgrado" id="edit_posgrado" placeholder="Posgrado" name="edit_posgrado" readonly
-					@if(old('edit_posgrado'))
-						value="{{old('edit_posgrado')}}"
-					@elseif(session('edit_posgrado')) value="{{session('edit_posgrado')}}"
-					@endif
-					>
-					<span class="helper-text">Posgrado <a href="#" class="edit" data-brother="edit_posgrado">(Editar)</a></span>
-					<datalist id="dl-edit_posgrado">
-						@foreach($posgrados as $posgrado)
-							<option value="{{$posgrado->nombre}}">{{$posgrado->nombre}}</option>
-						@endforeach
-					</datalist>
-				</div>	
-		
-				<div class="input-field col s11 l3">
+				<div class="input-field col s11 l5 offset-l1">
 					<i class="material-icons prefix">date_range</i>
 					<input class="input-editable unvaluable" type="number" id="edit_validez" name="edit_validez" readonly
 					@if(old('edit_validez'))
@@ -653,7 +665,7 @@
 					>
 					<span class="helper-text">Validez <a href="#" class="edit" data-brother="edit_validez">(Editar)</a></span>
 				</div>
-				<div class="input-field col s11 l3">
+				<div class="input-field col s11 l5">
 					<i class="material-icons prefix">attach_money</i>
 					<input class="input-editable unvaluable" type="number" id="edit_precio" name="edit_precio" readonly required
 					@if(old('edit_precio'))
@@ -662,24 +674,6 @@
 					@endif
 					>
 					<span class="helper-text">Precio <a href="#" class="edit" data-brother="edit_precio">(Editar)</a></span>
-				</div>
-			</div>
-			<div class="row">
-				
-				<div class="input-field col l5 offset-l1 s11">
-					<textarea class="input-editable unvaluable" id="edit_tema" name="edit_tema" readonly>@if(old('edit_tema')){{old('edit_tema')}}@elseif(session('edit_tema')){{session('edit_tema')}}@endif</textarea>
-					<span class="helper-text">Tema <a href="#" class="edit" data-brother="edit_tema">(Editar)</a></span>
-				</div>
-				<div class="input-field col s11 l5">
-					<textarea class="input-editable unvaluable" id="edit_observaciones" name="edit_observacion" readonly
-
-						@if(old('edit_observacion')) 
-							value="{{old('edit_observacion')}}"
-						@elseif(session('edit_observacion'))
-							value="{{session('edit_observacion')}}
-						@endif
-						></textarea>
-					<span class="helper-text">Observaciones <a href="#" class="edit" data-brother="edit_observaciones">(Editar)</a></span>
 				</div>
 			</div>
 			<div class="row">
@@ -693,7 +687,7 @@
 					<span class="helper-text">Avance % <a href="#" class="edit" data-brother="edit_avance">Editar</a></span>
 				</div>
 				<div class="input-field col s11 l5">
-					<select name="edit_medio" id="edit_medio" class="browser-default">
+					<select name="edit_medio" id="edit_medio" class="select-editable browser-default">
 						<option disabled selected>Medio</option>
 						@foreach($medios as $medio)
 							<option class="medios_option" value="{{$medio->id}}">{{$medio->nombre}}</option>
