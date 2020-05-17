@@ -196,7 +196,7 @@ class FichasAcademicasController extends Controller
             'id_nivel_usuario' => $user->id_nivel,
         ]);
         
-        return $pdf->setPaper('a4', 'landscape')->stream();
+        return $pdf->setPaper('a4',)->stream();
 
     }
 }

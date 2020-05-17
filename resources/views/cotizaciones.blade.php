@@ -205,7 +205,9 @@
 					    						<a href="{{asset('fichas_academicas').'/'.$cotizacion->ficha->id}}" class="tooltipped" data-position="top" data-tooltip="Ver Ficha"><i class="material-icons">chrome_reader_mode</i></a>
 					    					@endif
 					    					<!--a href="#" class="tooltipped" data-position="top" data-tooltip="Ver cotización en PDF"><i class="material-icons">picture_as_pdf</i></a-->
+					    					
 					    					<a href="{{ route('cotizacion.pdf', $cotizacion->id)}}" class="tooltipped" data-position="top" data-tooltip="Ver cotización en PDF"><i class="material-icons">picture_as_pdf</i></a>
+
 					    					<a href="#" class="tooltipped" data-position="top" data-tooltip="Agregar observación"><i class="material-icons">message</i></a>
 					    				</td>
 					    			</tr>

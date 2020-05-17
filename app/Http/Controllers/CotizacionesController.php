@@ -538,18 +538,37 @@ class CotizacionesController extends Controller
     }
     public function exportPdf($id)
     {
-        $cotizacion = Cotizacion::where('id','=',$id)->firstorFail();
-        //$cotizaciones = Cotizacion::find($id);
-        $nivel = NivelAcademico::where('id','=',$id)->firstorFail();
-        $universidad = Universidad::where('id','=',$id)->firstorFail();
-        $facultad = Facultad::where('id','=',$id)->firstorFail();
-        $carrera = Carrera::where('id','=',$id)->firstorFail();
-        $profesion = Profesion::where('id','=',$id)->firstorFail();
-        $grado = Grado::where('id','=',$id)->firstorFail();
-        $modalidad = Modalidad::where('id','=',$id)->firstorFail();
-        $medio = Medio::where('id','=',$id)->firstorFail();
-        $pdf = PDF::loadView('pdf.cotizaciones', compact('cotizacion','nivel','universidad','facultad','carrera','profesion','grado','modalidad','medio'));
-        return $pdf->download('cotizacion-list.pdf');
+
+        $cotizacion = Cotizacion::where('id',$id)
+        ->with([
+            'cliente',
+            'modalidad',
+            'tipoCotizacion',
+            'nivelAcademico',
+            'medio',
+            'cotizacionUniversitaria' =>function($query){
+                $query->with([
+                    'cotizacionGeneral' =>function($query){
+                        $query->with([
+                            'facultad',
+                            'carrera'
+                        ]);
+                    },
+                    'cotizacionPosgrado'=>function($query){
+                        $query->with([
+                            'posgrado'
+                        ]);
+                    },
+                ]);
+            },
+        ])
+        ->firstorFail();
+        
+        $pdf = PDF::loadView('pdf.cotizacion_basica_pdf',[
+            'cotizacion' => $cotizacion
+        ]);
+        
+        return $pdf->setPaper('letter')->stream();
 
     }
 }
