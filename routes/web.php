@@ -16,7 +16,9 @@ Route::get('/', function () {
 })->name('/')->middleware('roles:1');;
 //Usuarios
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
-Route::get('users', 'UsersController@index')->name('users')->middleware('roles:1');
+Route::get('users', 'UsersController@index')->middleware('roles:1');
+Route::get('users/{id}', 'PersonasController@seePerson')->name('users/')->middleware('roles:1');
+Route::post('modificar_persona', 'PersonasController@updatePerson')->name('modificar_persona')->middleware('roles:1');
 Route::post('login_user', 'Auth\LoginController@login')->name('login_user');
 
 // Cotizaciones
@@ -72,6 +74,7 @@ Route::get('buscar_egreso', 'CajaChicaController@buscarEgreso')->name('buscar_eg
 Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 Route::post('users', 'UsersController@sphinx_sap')->name('users')->middleware('roles:1');
 
+Route::get('buscar_personas', 'PersonasController@buscarPersonas')->name('buscar_personas')->middleware('roles:1');
 Route::post('edit_person', 'PersonasController@edit_person')->name('edit_person')->middleware('roles:1');
 Route::post('change_state', 'PersonasController@change_state')->name('change_state')->middleware('roles:1');
 

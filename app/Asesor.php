@@ -8,11 +8,29 @@ class Asesor extends Model
 {
     protected $table = 'asesores';
     protected $guarded = [];
-
-    public function usuario(){
-    	return $this->belongsTo('App\User','id_usuario');
+    protected $validate = [
+        'id_carrera'   => ['required'],
+        'sexo'       => [ 'in:1,2','required'],
+    ];
+    public function getValidations(){
+        return $this->validate;
     }
+    public function carrera(){
+    	return $this->belongsTo('App\Carrera','id_carrera');
+    }
+    public function usuario(){
+        return $this->belongsTo('App\User','id_usuario');
+    }
+    public static function modify($persona,$persona_attrs_to_change,$request){
+        
+        foreach($persona_attrs_to_change as $key => $value){
 
+            $persona->users->asesor->$key = $request->$value;
+        }
+        
+
+        return $persona;
+    }
     public function smartSearcher($date){
         $result = $this::with(['usuario'=>function($query){
             $query->with('persona');

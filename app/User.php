@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Foolz\SphinxQL\SphinxQL;
 use Foolz\SphinxQL\Drivers\Mysqli\Connection;
-
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
@@ -23,7 +23,10 @@ class User extends Authenticatable
     protected $fillable = [
         'id_nivel', 'username', 'password', 'id_persona'
     ];
-
+    private $validate = [
+        'username'  => ['required','unique:users,username'],
+        'nivel'     => ['required','exists:niveles,id'],
+    ];
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -42,6 +45,23 @@ class User extends Authenticatable
     {
         return 'id';
     }
+    public function getValidations(){
+        return $this->validate;
+    }
+    public static function modify($persona,$user_attrs_to_change,$request){
+
+        foreach($user_attrs_to_change as $key => $value){
+            if($key == 'password'){
+                $persona->users->$key = Hash::make($request->$value);
+            }else{
+                $persona->users->$key = $request->$value;
+            }
+        }
+        
+
+        return $persona;
+    }
+    
     public function persona(){
         return $this->belongsTo('App\Persona','id_persona');
     }

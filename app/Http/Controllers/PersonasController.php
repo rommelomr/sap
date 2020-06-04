@@ -8,6 +8,7 @@ use App\Persona;
 use App\Asesor;
 use App\Cliente;
 use App\Carrera;
+use App\Ciudad;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StorePersonaRequest;
@@ -15,67 +16,47 @@ use Illuminate\Validation\Rule;
 
 class PersonasController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('auth.users'); 
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StorePersonaRequest $request)
+    public function seePerson($id)
     {
-        /*$persona = new Persona();
-        $persona->nombre = $request->input('nombre');
-        $persona->apellido = $request->input('apellido');
-        $persona->cedula = $request->input('cedula');
-        $persona->telefono = $request->input('telefono');
-        $persona->celular = $request->input('celular');
-        $persona->direccion = $request->input('direccion');
-        $persona->email = $request->input('email');
-        $persona = new User();
-        $persona->id_nivel = $request->input('id_nivel');
-        $persona->username = $request->input('username');
-        $persona->password = $request->input('password');
-        $persona->save();
-        return redirect()->route('auth.users');*/
+
+        $persona = Persona::where('id',$id)
+        ->with([
+            'cliente'=>function($query){
+                $query->with([
+                    'expedicion',
+                    'residencia',
+                ]);
+            },
+            'users'=>function($query){
+                $query->with('asesor');
+            }
+        ])->firstOrFail();
+
+        if($persona->users == null){
+            $rol = 'cliente';
+        }elseif($persona->users->asesor == null){
+            $rol = 'usuario';
+        }else{
+            $rol = 'asesor';
+        }
+
+        $ciudades = Ciudad::all();
+        $carreras = Carrera::all();
+
+        return view('usuarios.see_person',[
+            'rol' => $rol,
+            'persona' => $persona,
+            'ciudades' => $ciudades,
+            'carreras' => $carreras,
+        ]); 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit_person(Request $request)
     {
         $messages = [
@@ -233,14 +214,107 @@ class PersonasController extends Controller
         return redirect()->back()->with($info);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+    public function buscarPersonas(Request $request){
+
+        $pass = UsersController::generatePass();
+        $carreras = Carrera::all();
+        $ciudades = Ciudad::all();
+        $personas = Persona::smartSearcher($request->string)->paginate(25);
+
+        return view('auth.users',[
+            'pass'      =>  $pass,
+            'carreras'  =>  $carreras,
+            'ciudades'  =>  $ciudades,
+            'personas'  =>  $personas,
+        ]);        
+    }
+    public function updatePerson(Request $request){
+        
+        $persona = Persona::where('id',$request->id)
+        ->with([
+            'cliente',
+            'users'=>function($query){
+                $query->with('asesor');
+            },
+        ])
+        ->firstOrFail();
+
+        $person_attrs_to_change = Persona::analizeChanges($persona,$request,
+            [
+            'nombre'    => 'nombre',
+            'apellido'  => 'apellido',
+            'cedula'    => 'cedula',
+            'email'     => 'email',
+            'telefono'  => 'telefono',
+            'celular'   => 'celular',
+            'direccion' => 'direccion',
+            'estado'    => 'estado',
+        ]);
+
+        $validate_arr_persona = Persona::makeArrayToValidate(Persona::class,$person_attrs_to_change);
+
+        $validate_arr = $validate_arr_persona;
+
+        if($request->tipo == 'cliente'){
+
+            $client_attrs_to_change = Cliente::analizeChanges($persona->cliente,$request,[
+
+                'carnet'                    => 'carnet',
+                'id_ciudad_expedicion'  => 'expedicion',
+                'id_ciudad_residencia'  => 'residencia',
+
+            ]);
+            $validate_arr_cliente = Cliente::makeArrayToValidate(Cliente::class,$client_attrs_to_change);
+            $validate_arr = array_merge($validate_arr,$validate_arr_cliente);
+
+        }else{
+
+            $user_attrs_to_change = User::analizeChanges($persona->users,$request,[
+                'username'  => 'usuario',
+            ]);
+            
+            $validate_arr_usuario = User::makeArrayToValidate(User::class,$user_attrs_to_change);
+
+            $validate_arr = array_merge($validate_arr,$validate_arr_usuario);
+
+            if($request->tipo == 'asesor'){
+                
+                $asesor_attrs_to_change = Asesor::analizeChanges($persona->users->asesor,$request,[
+                    'id_carrera'=> 'carrera',
+                    'sexo'=> 'sexo',
+                ]);
+                
+                $validate_arr_asesor = Asesor::makeArrayToValidate(Asesor::class,$asesor_attrs_to_change);
+                $validate_arr = array_merge($validate_arr,$validate_arr_asesor);
+            }
+        }
+
+        $request->validate($validate_arr);
+
+
+        $persona = Persona::modify($persona,$person_attrs_to_change,$request);
+
+        if($request->tipo == 'cliente'){
+            
+            $persona = Cliente::modify($persona,$cliente_attrs_to_change,$request);
+
+        }else{
+            if($request->contrasena != null){
+                $user_attrs_to_change['password'] = 'contrasena';
+            }
+            
+            $persona = User::modify($persona,$user_attrs_to_change,$request);
+
+            if($request->tipo == 'asesor'){
+                $persona = Asesor::modify($persona,$asesor_attrs_to_change,$request);
+
+            }
+        }
+
+        $persona->push();
+
+        return redirect()->back()->with(['messages'=>[
+            'Persona modificada exitosamente'
+        ]]);
     }
 }

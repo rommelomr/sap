@@ -1,3 +1,17 @@
+INSERT INTO `ciudades` (nombre) VALUES
+('Chuquisaca'),
+('Potosi'),
+('Cochabamba'),
+('La Paz'),
+('El Alto'),
+('Oruro'),
+('Tarija'),
+('Beni'),
+('Trinidad'),
+('Cobija'),
+('Pando'),
+('Santa Cruz');
+
 insert into niveles (nombre) values ('Administrador') , ('Asesor');
 
 INSERT INTO `personas` (`id`, `nombre`, `apellido`, `cedula`, `telefono`, `celular`, `direccion`, `email`, `email_verified_at`, `estado`, `created_at`, `updated_at`) VALUES
@@ -29,12 +43,12 @@ INSERT INTO `users` (`id`, `id_nivel`, `username`, `password`, `id_persona`, `re
 (9, 2, 'username6098', '$2y$10$7ypTmTnbFeGIH1VjXx4CIOnopcJ39FLWcmqVRNdkETrP9gs1YgpMa', 14, NULL, '2020-01-22 06:55:19', '2020-01-22 06:55:19'),
 (10, 2, 'username9226', '$2y$10$C.u8mavSK8Ozh.6MMjxtn.VNJYfGwoam72Ir9r8oaNGAVb2FqBYsG', 15, NULL, '2020-01-22 06:55:28', '2020-01-22 06:55:28');
 
-INSERT INTO `clientes` (`id`, `id_persona`, `carnet`, `created_at`, `updated_at`) VALUES
-(1, 2, 'cu4193', '2020-01-22 06:54:29', '2020-01-22 06:54:29'),
-(2, 3, 'cu7574', '2020-01-22 06:54:30', '2020-01-22 06:54:30'),
-(3, 4, 'cu6133', '2020-01-22 06:54:31', '2020-01-22 06:54:31'),
-(4, 5, 'cu5615', '2020-01-22 06:54:32', '2020-01-22 06:54:32'),
-(5, 6, 'cu4996', '2020-01-22 06:54:33', '2020-01-22 06:54:33');
+INSERT INTO `clientes` (`id`, `id_persona`, `carnet`, `created_at`, `updated_at`, `id_ciudad_expedicion`, `id_ciudad_residencia`) VALUES
+(1, 2, 'cu4193', '2020-01-22 06:54:29', '2020-01-22 06:54:29',1,1),
+(2, 3, 'cu7574', '2020-01-22 06:54:30', '2020-01-22 06:54:30',2,2),
+(3, 4, 'cu6133', '2020-01-22 06:54:31', '2020-01-22 06:54:31',3,3),
+(4, 5, 'cu5615', '2020-01-22 06:54:32', '2020-01-22 06:54:32',4,4),
+(5, 6, 'cu4996', '2020-01-22 06:54:33', '2020-01-22 06:54:33',5,5);
 
 INSERT INTO `universidades` (nombre) VALUES
 ('Universidad Mayor de San Francisco Xavier'),

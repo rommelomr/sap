@@ -59,7 +59,7 @@ class ContratosController extends Controller
 		$req->validate([
 			'id_ficha' => 'required|exists:fichas_academicas,id',
 			'id_asesor' => 'required|exists:asesores,id',
-			'id_tipo_contrato' => 'required|exists:contratos,id',
+			'id_tipo_contrato' => 'required|exists:tipos_contrato,id',
 			'monto' => 'required|numeric',
 			'id_daf' => 'required|exists:asesores,id|different:id_asesor',
 		],$msg);

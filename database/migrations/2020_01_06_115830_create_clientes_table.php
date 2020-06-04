@@ -15,9 +15,18 @@ class CreateClientesTable extends Migration
     {
         Schema::create('clientes', function (Blueprint $table) {
             $table->bigIncrements('id');
+
             $table->unsignedBigInteger('id_persona');
             $table->foreign('id_persona')->references('id')->on('personas')->onDelete('cascade');
+
+            $table->unsignedBigInteger('id_ciudad_expedicion');
+            $table->foreign('id_ciudad_expedicion')->references('id')->on('ciudades')->onDelete('cascade');
+
+            $table->unsignedBigInteger('id_ciudad_residencia');
+            $table->foreign('id_ciudad_residencia')->references('id')->on('ciudades')->onDelete('cascade');
+
             $table->string('carnet', 250);
+
             $table->timestamps();
         });
     }

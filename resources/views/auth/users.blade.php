@@ -45,6 +45,21 @@
                                         <input id="cedula" type="text" name="cedula" @if(old('cedula')) value="{{old('cedula')}}" @endif>
                                     </div>
                                     <div class="input-field col s6">
+                                        <select name="id_ciudad_expedicion" id="">
+                                                <option disabled selected>Expedición</option>
+                                            @foreach($ciudades as $ciudad)
+                                                <option 
+                                                    @if($ciudad->id == old('id_ciudad_expedicion'))
+                                                        selected
+                                                    @endif
+
+                                                value="{{$ciudad->id}}">{{$ciudad->nombre}}</option>
+                                            @endforeach
+                                        </select>
+                                        <span class="helper-text">Expedición</span>
+                                    </div>
+                                    
+                                    <div class="input-field col s6">
                                         <i class="material-icons prefix">email</i>
                                         <label for="email">Email</label>
                                         <input id="email" type="text" name="email" @if(old('email')) value="{{old('email')}}" @endif>
@@ -64,6 +79,7 @@
                                         <label for="direccion">Dirección</label>
                                         <input id="direccion" type="text" name="direccion" @if(old('direccion')) value="{{old('direccion')}}" @endif>
                                     </div>
+
                                     <div class="input-field col s6">
                                         <center>
                                             
@@ -175,6 +191,19 @@
                                             <input id="cu" type="text" name="cu" @if(old('cu')) value="{{old('cu')}}" @endif>
                                         </div>
                                     </div>
+                                    <div class="input-field col s6">
+                                        <select name="id_ciudad_residencia" id="">
+                                                <option disabled selected>Residencia</option>
+                                            @foreach($ciudades as $ciudad)
+                                                <option
+                                                    @if($ciudad->id == old('id_ciudad_residencia'))
+                                                        selected
+                                                    @endif
+                                                value="{{$ciudad->id}}">{{$ciudad->nombre}}</option>
+                                            @endforeach
+                                        </select>
+                                        <span class="helper-text">Residencia</span>
+                                    </div>
                                 </div>
                                 <div class="row" style="margin:0;padding:0">
                                     <div  class="input-field col s12">
@@ -202,14 +231,60 @@
                             </div>
                         </nav><br>
                         <div class=" row">
-                                <div class="col s12">
+                            <div class="col s12">
+
+                                <div class="col s8 offset-s2">
+                                    <form action="{{url('buscar_personas')}}" method="get">
+                                        @csrf
+                                        <div class="input-field">
+                                        
+                                            <label for="buscar">Busca persona</label>
+                                            <input id="buscar_usuario" type="submit" hidden>
+
+                                            <input id="buscar" type="text" name="string">
+                                            <span><label for="buscar_usuario"><i class="icon-button material-icons prefix">search</i></label></span>
+
+                                        </div>
+                                    </form>
+                                </div>
+                                @if(isset($personas))
+                                    <div class="col s10 offset-s1">
+                                        <ul class="collection">
+                                            @forelse($personas as $persona)
+                                                <li class="collection-item">
+
+                                                    @if($persona->cliente != null)
+                                                        <i class="material-icons">school</i>
+                                                    @else
+                                                        @if($persona->users->asesor != null)
+                                                            <i style="color:green" class="material-icons">face</i>
+                                                        @else
+                                                            <i style="color:blue" class="material-icons">account_circle</i>
+                                                        @endif
+                                                    @endif
+                                                    <b>Nombre:</b> {{$persona->nombre}} {{$persona->apellido}} | <b>Cédula:</b> {{$persona->cedula}}
+
+                                                    <a href="{{route('users/',$persona->id)}}" class="modal-trigger">
+                                                        <span style="color:blue" class="badge"><i class="material-icons">remove_red_eyes</i></span>
+
+                                                    </a>
+                                                </li>
+                                            @empty
+                                            @endforelse
+                                        </ul>
+                                    </div>
+                                @endif
+
+
+
+
+                                    @if(false)
                                     @php
                                         if(session('resultBusqueda')){
                                             $resultBusqueda = session('resultBusqueda');
                                             $carreras = session('carreras');
                                         }
                                     @endphp
-                                    @if(isset($resultBusqueda) && isset($resultBusqueda['codigo']) && $resultBusqueda['codigo'] == 200)
                                     <?php 
 
                                             $datos = $resultBusqueda['datos'][array_key_first($resultBusqueda['datos'])];
@@ -377,20 +452,6 @@
                                         <input id="change_state" type="submit">
                                     </form>
                                     @endif
-                                </div>
-                            <div class="col s8 offset-s2">
-                                <form action="{{url("users")}}" method="post">
-                                    @csrf
-                                    <div class="input-field">
-                                    
-                                        <label for="buscar">search user</label>
-                                        <input id="buscar_usuario" type="submit" hidden>
-
-                                        <input id="buscar" type="text" name="buscar" value="">
-                                        <span><label for="buscar_usuario"><i class="icon-button material-icons prefix">search</i></label></span>
-
-                                    </div>
-                                </form>
                             </div>
                         </div>
                     </div>
@@ -398,7 +459,15 @@
             </div>
         </div>
     </div>
-
+  <div id="#info-persona-modal" class="modal">
+    <div class="modal-content">
+      <h4>Informacion de la persona</h4>
+      <p>A bunch of text</p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+    </div>
+  </div>
 @endsection
 
 <script>

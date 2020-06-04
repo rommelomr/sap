@@ -81,21 +81,24 @@ class RegisterController extends Controller
         unset($data['tipo']);
 
         $validation =  Validator::make($data, [
-            'nombre'    => ['required', 'regex:/^[A-Za-z\s]+$/', 'max:100'],
-            'apellido'  => ['required', 'regex:/^[A-Za-z\s]+$/', 'max:100'],
-            'cedula'    => ['required', 'digits_between:1,20','unique:personas'],
-            'email'     => ['required', 'email', 'max:100', 'unique:personas'],
+            'nombre'    => ['required', 'regex:/^[A-Za-z\s]+$/' , 'max:100'],
+            'apellido'  => ['required', 'regex:/^[A-Za-z\s]+$/' , 'max:100'],
             'telefono'  => ['required', 'digits_between:1,20'],
             'celular'   => ['required', 'digits_between:1,20'],
             'direccion' => ['required', 'string', 'max:65535'],
+
+            'cedula'    => ['required', 'digits_between:1,20'   ,'unique:personas'],
+            'email'     => ['required', 'email'                 , 'max:100', 'unique:personas'],
             'type_user' => [Rule::in(['on','off'])],
 
             //cliente
-            'cu'        => ['required_if:type_user,off'],
+            'cu'                    => ['required'],
+            'id_ciudad_expedicion'  => ['required','required','exists:ciudades,id'],
+            'id_ciudad_residencia'  => ['required','required','exists:ciudades,id'],
 
             //usuario
-            'username'  => ['required_if:type_user,on','unique:users,username'],
             'password'  => ['required_if:type_user,on'],
+            'username'  => ['required_if:type_user,on','unique:users,username'],
             'nivel'     => ['required','exists:niveles,id'],
 
             //asesor

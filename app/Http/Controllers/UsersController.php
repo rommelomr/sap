@@ -7,6 +7,7 @@ use App\User;
 use App\Asesor;
 use App\Cliente;
 use App\Carrera;
+use App\Ciudad;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -34,7 +35,7 @@ class UsersController extends Controller
     {
         Carbon::setlocale('es');
     }
-    private static function generatePass(){
+    public static function generatePass(){
 
         $pass = '';
         for($i = 0; $i<8; $i ++){
@@ -52,9 +53,11 @@ class UsersController extends Controller
     {
         $pass = UsersController::generatePass();
         $carreras = Carrera::all();
+        $ciudades = Ciudad::all();
         return view('auth.users',[
-            'carreras'=>$carreras,
             'pass'=>$pass,
+            'carreras'=>$carreras,
+            'ciudades'=>$ciudades,
         ]);
     }
 
@@ -109,6 +112,8 @@ class UsersController extends Controller
             $cliente = new Cliente();
             $cliente->id_persona = $persona->id;
             $cliente->carnet = $request['cu'];
+            $cliente->id_ciudad_expedicion = $request['id_ciudad_expedicion'];
+            $cliente->id_ciudad_residencia = $request['id_ciudad_residencia'];
             $cliente->save();
 
         }

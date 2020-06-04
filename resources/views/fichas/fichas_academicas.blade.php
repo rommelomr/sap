@@ -87,12 +87,15 @@
 						
 					</nav>
 					
-					<div class="row">
+					<div class="row valign-wrapper">
 						<div class="col s6">
 							<br>
 							<center>
 								<b>Ficha #{{$ficha->id}}</b>
-								<a class='dropdown-trigger btn blue darken-2' data-target='opciones_ficha'>Opciones</a>
+								<a class='dropdown-trigger btn blue darken-2' data-target='opciones_ficha'>Opciones</a><br><br>
+								@if($ficha->asesor == null)
+								<label for="">No se puede crear una ficha económica sin antes adjuntar un contrato</label>
+								@endif
 								<ul id='opciones_ficha' class='dropdown-content'>
 									@if($ficha->id_contrato != null && $id_nivel_usuario === 1)
 									    <li>
@@ -112,191 +115,107 @@
 
 								
 							</center>
-							@if($ficha->asesor == null)
-							<div class="card red lighten-3" style="padding:1%">
-								<center>
-									No se puede crear una ficha económica sin antes adjuntar un contrato
-								</center>
-							</div>
-							@endif
-							<fieldset>
-								<legend>
-									<b>Nombre:</b>
-								</legend>
-								{{$ficha->cliente->persona->nombre}}
-							</fieldset>
-
-							<fieldset>
-								<legend>
-									<b>Datos Personales</b>
-								</legend>
-								<b>Dirección:</b> {{$ficha->cliente->persona->direccion}}<br>
-								<b>email:</b> {{$ficha->cliente->persona->email}}<br>
-								<b>Teléfono:</b> {{$ficha->cliente->persona->telefono}}
-								<b>Celular:</b> {{$ficha->cliente->persona->celular}}
-							</fieldset>
-
-							<fieldset>
-								<legend>
-									<b>Modalidad:</b>
-								</legend>
-								@if($ficha->cotizacion->modalidad !==null)
-									{{$ficha->cotizacion->modalidad->nombre}}
-								@else
-									<a href="{{asset('cotizacion').'/'.$ficha->cotizacion->id}}">Dato no definido</a>
-								@endif
-							</fieldset>
-
-							<fieldset>
-								<legend>
-									<b>Nivel Académico:</b>
-								</legend>
-								@if($ficha->cotizacion->nivelAcademico !==null)
-									{{$ficha->cotizacion->nivelAcademico->nombre}}
-								@else
-									<a href="{{asset('cotizacion').'/'.$ficha->cotizacion->id}}">Dato no definido</a>
-								@endif
-							</fieldset>
-							
-							<fieldset>
-								<legend>
-									<b>Universidad:</b>
-								</legend>
-								@if($ficha->cotizacion->universidad !==null)
-									{{$ficha->cotizacion->universidad->nombre}}
-								@else
-									<a href="{{asset('cotizacion').'/'.$ficha->cotizacion->id}}">Dato no definido</a>
-								@endif
-							</fieldset>
 						</div>
 						<div class="col s6">
 
 							<fieldset>
 								<legend>
-									<b>Datos Académicos:</b>
+									<b>Datos Personales</b>
 								</legend>
-								@if($ficha->cotizacion->cotizacionPosgrado == null)
-									@if($ficha->cotizacion->cotizacionGeneral->id_facultad !==null)
-										<b>Facultad:</b> {{$ficha->cotizacion->cotizacionGeneral->facultad->nombre}}<br>
-									@else
-										<b>Facultad:</b> <a href="{{asset('cotizacion').'/'.$ficha->cotizacion->id}}">Dato no definido</a><br>
-									@endif
-									@if($ficha->cotizacion->cotizacionGeneral->id_carrera !==null)
-										<b>Carrera:</b> {{$ficha->cotizacion->cotizacionGeneral->carrera->nombre}}<br>
-									@else
-										<b>Carrera:</b> <a href="{{asset('cotizacion').'/'.$ficha->cotizacion->id}}">Dato no definido</a><br>
-									@endif
-								@else
-										<b>Facultad:</b>N/A<br>
-										<b>Carrera:</b> N/A<br>
-								@endif
-
-
-								@if($ficha->cotizacion->id_profesion !==null)
-									<b>Profesión:</b> {{$ficha->cotizacion->profesion->nombre}}<br>
-								@else
-									<b>Profesión:</b> <a href="{{asset('cotizacion').'/'.$ficha->cotizacion->id}}">Dato no definido</a><br>
-								@endif
-								@if($ficha->cotizacion->curso !==null)
-									<b>Curso:</b> {{$ficha->cotizacion->curso->nombre}}
-								@else
-									<b>Curso:</b> <a href="{{asset('cotizacion').'/'.$ficha->cotizacion->id}}">Dato no definido</a>
-								@endif
-								<br>
-								@if($ficha->cotizacion->nivelAcademico !==null)
-									<b>Nivel:</b> {{$ficha->cotizacion->nivelAcademico->nombre}}
-								@else
-									<b>Nivel:</b> <a href="{{asset('cotizacion').'/'.$ficha->cotizacion->id}}">Dato no definido</a>
-								@endif
+								<b>Nombre:</b> {{$ficha->cliente->persona->nombre}} {{$ficha->cliente->persona->apellido}}<br>
+								<b>Dirección:</b> {{$ficha->cliente->persona->direccion}}<br>
+								<b>email:</b> {{$ficha->cliente->persona->email}}<br>
+								<b>Teléfono:</b> {{$ficha->cliente->persona->telefono}}
+								<b>Celular:</b> {{$ficha->cliente->persona->celular}}
 							</fieldset>
-
-							<fieldset>
-								<legend>
-									<b>Plazo de Ejecución:</b>
-								</legend>
-								<b>Monto Total:</b> 
-								{{$ficha->cotizacion->precio_total}} <br>
-								<b>Días calendario:</b> 
-								@if($ficha->fecha_inicio !==null && $ficha->fecha_fin !== null)
-								<?php 
-							        $date_uno = date_create($ficha->fecha_inicio);
-							        $date_dos = date_create($ficha->fecha_fin);
-							        $date = date_diff($date_uno,$date_dos)->format('%a');
-								 ?>
-									<span>{{$date}}</span>
+						</div>
+					</div>
+					<hr>
+					<div class="row">
+						<div class="col s12">
+						<b>Tipo de cotización:</b> 
+							@if($ficha->cotizacion->cotizacionBasica != null)
+								Básica
+							@elseif($ficha->cotizacion->cotizacionUniversitaria != null)
+								@if($ficha->cotizacion->cotizacionUniversitaria->cotizacionGeneral != null)
+									Universitaria General.
 								@else
-									<a href="#modal-editar-ficha" class="modal-trigger">Dato no definido</a>
+									Universitaria Posgrado.
 								@endif
-								<br>
-								<b>Avance:</b> 
-									<a class="tooltipped" data-tooltip="Actualizar avance" data-position="top" href="{{asset('cotizacion').'/'.$ficha->cotizacion->id}}" class="modal-trigger">
-										@if($ficha->cotizacion->avance != null)
-											{{$ficha->cotizacion->avance}}
+							@endif
+						</div>
+					</div>
+					<div class="row">
+						<div class="col s12">
+							<table class="striped centered">
+								<tr>
+									<th>Cliente</th><td>{{$ficha->cliente->persona->nombre}} {{$ficha->cliente->persona->apellido}}</td>
+								</tr>
+								<tr>
+									<th>Asesor</th><td>
+										@if($ficha->id_asesor != null)
+											{{$ficha->contrato->asesor->usuario->persona->nombre}} {{$ficha->contrato->asesor->usuario->persona->apellido}}
 										@else
-											0
+											<a href="#">Establecer</a>
 										@endif
-									</a>
-								<br>
-								@if($ficha->fecha_inicio !==null)
-									<b>Fecha Inicio:</b> <span><a href="#modal-editar-ficha" class="modal-trigger">{{$ficha->fecha_inicio}}</a></span> <br>
-								@else
-									<b>Fecha Inicio:</b> <a href="#modal-editar-ficha" class="modal-trigger">Dato no definido</a><br>
-								@endif
-								@if($ficha->fecha_fin !==null)
-									<b>Fecha Fin:</b> <span><a href="#modal-editar-ficha" class="modal-trigger">{{$ficha->fecha_fin}}</a></span>
-								@else
-									<b>Fecha Fin:</b> <a href="#modal-editar-ficha" class="modal-trigger">Dato no definido</a>
-								@endif
-							</fieldset>
-							<fieldset>
-								<legend>
-									<b>Etapa:</b>
-								</legend>
-								@if($ficha->etapa !==null)
-									{{$ficha->etapa->nombre}}
-								@else
-									<a href="#modal-editar-ficha" class="modal-trigger">Dato no definido</a>
-								@endif
-							</fieldset>
-							
-							<fieldset>
-								<legend>
-									<b>Asesor:</b>
-								</legend>
-								@if($ficha->asesor !==null)
-									{{$ficha->asesor->usuario->persona->nombre}}
-								@else
-									No se ha realizado ningun contrato
-									<a href="#modal-contratos" class="modal-trigger">Adjuntar Contrato</a>
-								@endif
-							</fieldset>
+									</td>
+								</tr>
+								<tr>
+									<th>Contrato</th><td>
+										@if($ficha->id_contrato != null)
+											Ver contrato
+										@else
+											<a href="#modal-contratos" class="modal-trigger">Adjuntar</a>
+										@endif
+									</td>
+								</tr>
+								<tr>
+									<th>Plazo</th><td>
+										@if($ficha->plazo != null)
+											{{$ficha->plazo}}
+										@else
+											<a href="#">Establecer</a>
+										@endif
 
-							<fieldset>
-								<legend>
-									<b>Número de registros:</b>
-								</legend>
-								<b>N° Cotización:</b>
-								@if($ficha->cotizacion->numero_cotizacion !==null)
-									<span>{{$ficha->cotizacion->numero_cotizacion}}</span>
-								@else
-									<a href="{{asset('cotizacion').'/'.$ficha->cotizacion->id}}">Dato no definido</a>
-								@endif
-								<br>
-								<b>Id Cotización:</b> <span>{{$ficha->cotizacion->id}}</span>
-								<br>
-								@if($ficha->contrato !==null)
-									<b>N° Contrato:</b> {{$ficha->contrato->numero_contrato}}
-								@else
-									<b>N° Contrato:</b> <a href="#modal-contratos" class="modal-trigger">Dato no definido</a>
-								@endif
-								<br>
-								@if($ficha->contrato !==null)
-									<b>Id Contrato:</b> <span>{{$ficha->contrato->id}}</span>
-								@else
-									<b>Id Contrato:</b> <a href="#modal-contratos" class="modal-trigger">Dato no definido</a>
-								@endif
-								<br>
-							</fieldset>
+									</td>
+								</tr>
+								<tr>
+									<th>Inicio / Fin</th><td>
+										@if($ficha->fecha_inicio != null)
+											{{$ficha->fecha_inicio}}
+										@else
+											<a href="#modal-editar-ficha" class="modal-trigger">Establecer fecha inicio</a>
+										@endif
+										/
+										@if($ficha->fecha_fin != null)
+											{{$ficha->fecha_fin}}
+										@else
+											<a href="#">Establecer fecha fin</a>
+										@endif
+									</td>
+								</tr>
+								<tr>
+									<th>Etapa</th><td>
+										@if($ficha->id_etapa != null)
+											{{$ficha->etapa->nombre}}
+										@else
+											<a href="#modal-editar-ficha" class="modal-trigger">Establecer etapa</a>
+										@endif
+									</td>
+								</tr>
+								<tr>
+									<th>Estado</th><td>
+										@if($ficha->estado == 0)
+											En desarrollo
+										@elseif($ficha->estado == 1)
+											Cancelada
+										@elseif($ficha->estado == 2)
+											Finalizada
+										@endif
+									</td>
+								</tr>
+								
+							</table>
 						</div>
 					</div>
 				</div>
@@ -467,12 +386,16 @@
 							</datalist>
 							<span class="helper-text">DAF</span>
 						</div>
-						<div class="input-field col offset-s5">
-							<button class="btn s12">Guardar</button>
-						</div>
+
+						<input type="submit" id="contrato-submit" hidden>
 						<input hidden name="id_ficha" value="{{$ficha->id}}">
 					</form>
 				</div>
+			</div>
+			<div class="modal-footer">
+				<label for="contrato-submit" class="btn">Guardar</label>
+				<button class="btn modal-close red">Cancelar</button>
+				
 			</div>
 		</div>
 

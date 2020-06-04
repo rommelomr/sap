@@ -17,7 +17,7 @@ users-> Tabla que guardará los datos de los usuarios
 asesores-> Tabla que guardará los datos de los asesores
 	id_usuario: (fk)
 	profesion: profesion del asesor
-	sexo: sexo del asesor
+	sexo: sexo del asesor //1 Femenino 2 Masculino
 
 clientes-> Tabla que guardará los datos de los clientes
 	id_persona: (fk)
@@ -126,7 +126,7 @@ Fichas_Academicas-> Tabla que guardará los datos de las asesorias que se realiz
 	fecha_fin: Fecha en que finalizará la asesoría, calculada por la fecha de inicio y el plazo
 	id_etapa: (fk Descripcion por aclarar)
 	fecha_registro: fecha en que se registra la ficha academica
-	Estado: Indicará si la asesoria está en desarrollo, cancelada o finalizada
+	Estado: Indicará si la asesoria está en desarrollo (0), cancelada (1) o finalizada (2)
 
 Observaciones_Fichas
 	id_ficha_academica: (fk)
