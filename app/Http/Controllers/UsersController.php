@@ -8,6 +8,7 @@ use App\Asesor;
 use App\Cliente;
 use App\Carrera;
 use App\Ciudad;
+use App\Ubicacion;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -54,10 +55,12 @@ class UsersController extends Controller
         $pass = UsersController::generatePass();
         $carreras = Carrera::all();
         $ciudades = Ciudad::all();
+        $ubicaciones = Ubicacion::all();
         return view('auth.users',[
             'pass'=>$pass,
             'carreras'=>$carreras,
             'ciudades'=>$ciudades,
+            'ubicaciones'=>$ubicaciones,
         ]);
     }
 
@@ -109,11 +112,17 @@ class UsersController extends Controller
                 ]);
             }
         }else{
+            
+            $ubicacion = Ubicacion::firstOrCreate([
+                'nombre' => $request['ubicacion']
+            ]);
+
             $cliente = new Cliente();
             $cliente->id_persona = $persona->id;
             $cliente->carnet = $request['cu'];
             $cliente->id_ciudad_expedicion = $request['id_ciudad_expedicion'];
             $cliente->id_ciudad_residencia = $request['id_ciudad_residencia'];
+            $cliente->id_ubicacion = $ubicacion->id;
             $cliente->save();
 
         }

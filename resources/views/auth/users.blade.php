@@ -1,7 +1,9 @@
 @extends('layouts.app')
 @extends('layouts.navbar')
 @extends('layouts.menu')
-
+@section('breadcrumbs')
+    <a href="#!" class="breadcrumb">Personas</a>
+@endsection
 @section('head')
     <link rel="stylesheet" href="{{asset('css/users.css')}}">
 @endsection
@@ -11,14 +13,10 @@
             <div class="card">
                 <div class="row">
                     <div class="col s12">
-                        
-                        <nav class="nav-extended blue darken-2">
-                            <div class="nav-content">
-                                <center>
-                                    <span class="nav-title">Registrar Persona</span>
-                                </center>
-                            </div>
-                        </nav>
+                        <center>
+                            <h5 class="nav-title">Registrar</h5>
+                        </center>
+
                         <div class="content">
 
                             <form method="post" action="register">
@@ -46,7 +44,7 @@
                                     </div>
                                     <div class="input-field col s6">
                                         <select name="id_ciudad_expedicion" id="">
-                                                <option disabled selected>Expedición</option>
+                                                <option disabled selected>Expedido</option>
                                             @foreach($ciudades as $ciudad)
                                                 <option 
                                                     @if($ciudad->id == old('id_ciudad_expedicion'))
@@ -56,7 +54,7 @@
                                                 value="{{$ciudad->id}}">{{$ciudad->nombre}}</option>
                                             @endforeach
                                         </select>
-                                        <span class="helper-text">Expedición</span>
+                                        <span class="helper-text">Expedido</span>
                                     </div>
                                     
                                     <div class="input-field col s6">
@@ -79,7 +77,19 @@
                                         <label for="direccion">Dirección</label>
                                         <input id="direccion" type="text" name="direccion" @if(old('direccion')) value="{{old('direccion')}}" @endif>
                                     </div>
-
+                                    <div class="input-field col s6">
+                                        <select name="id_ciudad_residencia" id="">
+                                                <option disabled selected>Residencia</option>
+                                            @foreach($ciudades as $ciudad)
+                                                <option
+                                                    @if($ciudad->id == old('id_ciudad_residencia'))
+                                                        selected
+                                                    @endif
+                                                value="{{$ciudad->id}}">{{$ciudad->nombre}}</option>
+                                            @endforeach
+                                        </select>
+                                        <span class="helper-text">Residencia</span>
+                                    </div>
                                     <div class="input-field col s6">
                                         <center>
                                             
@@ -191,19 +201,21 @@
                                             <input id="cu" type="text" name="cu" @if(old('cu')) value="{{old('cu')}}" @endif>
                                         </div>
                                     </div>
-                                    <div class="input-field col s6">
-                                        <select name="id_ciudad_residencia" id="">
-                                                <option disabled selected>Residencia</option>
-                                            @foreach($ciudades as $ciudad)
-                                                <option
-                                                    @if($ciudad->id == old('id_ciudad_residencia'))
-                                                        selected
-                                                    @endif
-                                                value="{{$ciudad->id}}">{{$ciudad->nombre}}</option>
-                                            @endforeach
-                                        </select>
-                                        <span class="helper-text">Residencia</span>
+
+                                    <div>
+                                        <div class="input-field col s6">
+                                            <i class="material-icons prefix">business</i>
+                                            <label for="ubicacion">Ubicación</label>
+                                            <input id="ubicacion" type="text" name="ubicacion" @if(old('ubicacion')) value="{{old('ubicacion')}}" @endif list="ubicaciones" autocomplete="off">
+                                            <datalist id="ubicaciones">
+                                                @forelse($ubicaciones as $ubicacion)
+                                                    <option value="{{$ubicacion->nombre}}"></option>
+                                                @empty
+                                                @endforelse
+                                            </datalist>
+                                        </div>
                                     </div>
+
                                 </div>
                                 <div class="row" style="margin:0;padding:0">
                                     <div  class="input-field col s12">
@@ -222,14 +234,10 @@
             <div class="card">
                 <div class="row">
                     <div class="col s12">
-
-                        <nav class="nav-extended blue darken-2">
-                            <div class="nav-content">
-                                <center>
-                                    <span class="nav-title">Ver Persona</span>
-                                </center>
-                            </div>
-                        </nav><br>
+                        <center>
+                            <h5 class="nav-title">Ver Persona</h5>
+                        </center>
+                        <br>
                         <div class=" row">
                             <div class="col s12">
 

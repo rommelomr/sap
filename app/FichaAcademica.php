@@ -36,6 +36,44 @@ class FichaAcademica extends Model
     public function pagosAsesor(){
         return $this->hasMany('App\PagoAsesor','id_ficha_economica');
     }
-    
+    public static function smartSearcher($string){
+
+        return FichaAcademica::where(function($query)use($string){
+
+            $query->where('plazo','like','%'.$string.'%')
+            ->orWhere('fecha_inicio','like','%'.$string.'%')
+            ->orWhere('fecha_fin','like','%'.$string.'%');
+
+        })->orWhereHas('cliente',function($query)use($string){
+            $query->whereHas('persona',function($query)use($string){
+                $query->where('nombre','like','%'.$string.'%')
+                ->orWhere('apellido','like','%'.$string.'%')
+                ->orWhere('cedula','like','%'.$string.'%')
+                ->orWhere('email','like','%'.$string.'%')
+                ->orWhere('telefono','like','%'.$string.'%')
+                ->orWhere('celular','like','%'.$string.'%')
+                ->orWhere('direccion','like','%'.$string.'%');
+            });
+        })->orWhereHas('asesor',function($query)use($string){
+
+            $query->whereHas('usuario',function($query)use($string){
+
+                $query->whereHas('persona',function($query)use($string){
+
+                    $query->where('nombre','like','%'.$string.'%')
+                    ->orWhere('apellido','like','%'.$string.'%')
+                    ->orWhere('cedula','like','%'.$string.'%')
+                    ->orWhere('email','like','%'.$string.'%')
+                    ->orWhere('telefono','like','%'.$string.'%')
+                    ->orWhere('celular','like','%'.$string.'%')
+                    ->orWhere('direccion','like','%'.$string.'%');
+                });
+
+            });
+
+        })->orWhereHas('etapa',function($query)use($string){
+            $query->where('nombre','like','%'.$string.'%');
+        });
+    }    
 
 }

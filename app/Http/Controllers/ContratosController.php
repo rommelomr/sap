@@ -7,9 +7,46 @@ use Barryvdh\DomPDF\Facade as PDF;
 use App\Cotizacion;
 use App\Contrato;
 use App\FichaAcademica;
+use App\TipoContrato;
 
 class ContratosController extends Controller
 {
+	public function editarContrato(Request $request){
+
+
+		$request->validate([
+			'id_contrato' 		=> ['exists:contratos,id','required'],
+			'monto'				=> ['numeric','nullable'],
+			'id_tipo_contrato'	=> ['exists:tipos_contrato,id','nullable']
+		]);
+
+		$contrato = Contrato::find($request->id_contrato);
+
+		if($request->monto != $contrato->monto){
+			$contrato->monto = $request->monto;
+		}
+
+		if($request->id_tipo_contrato != $contrato->id_tipo_contrato){
+			$contrato->id_tipo_contrato = $request->id_tipo_contrato;
+		}
+
+		$contrato->save();
+		return redirect()->back()->with([
+			'messages'=>[
+				'Contrato modificado correctamente'
+			]
+		]);
+		
+	}
+	public function verContrato($id){
+		$tipos_contrato = TipoContrato::all();
+		$contrato = Contrato::obtenerContratoCompleto($id);
+		
+		return view('contratos/ver_contrato',[
+			'contrato' => $contrato,
+			'tipos_contrato' => $tipos_contrato,
+		]);
+	}
 	private function loadResources(){
 		$contratos = Contrato::with(['asesor'=>function($query){
 			$query->with(['usuario'=>function($query){
@@ -27,14 +64,19 @@ class ContratosController extends Controller
 		];
 	}
 	public function index(){
+
 		$arr = $this->loadResources();
+
 		return view('contratos.contratos',$arr);
 	}
 	public function buscarContrato(Request $request){
+
         $request->validate([
             'date' => ['required']
         ]);
+
         $input = explode('-',$request->date);
+
         if(count($input) === 2){
             $date = [
                 'y' => $input[0],
@@ -44,9 +86,10 @@ class ContratosController extends Controller
             return redirect()->back()->with(['messages'=>['formato de fecha inválido']]);
         }
         $contratos = Contrato::smartSearcher($request->string);
+
         $contratos = $contratos->whereYear('created_at',$date['y'])->whereMonth('created_at',$date['m'])->paginate(10);
         return view('contratos.contratos',['contratos'=>$contratos]);
-        dd($contratos);
+        
 	}
 	public function crearContrato(Request $req){
 		session()->flash('contrato',true);

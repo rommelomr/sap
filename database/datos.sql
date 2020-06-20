@@ -1,16 +1,16 @@
+INSERT INTO `ubicaciones` (nombre) VALUES
+('Ubicacion ejemplo');
+
 INSERT INTO `ciudades` (nombre) VALUES
-('Chuquisaca'),
-('Potosi'),
-('Cochabamba'),
+('Sucre'),
 ('La Paz'),
-('El Alto'),
-('Oruro'),
+('Cochabamba'),
 ('Tarija'),
 ('Beni'),
-('Trinidad'),
-('Cobija'),
 ('Pando'),
-('Santa Cruz');
+('Santa Cruz'),
+('Oruro'),
+('Potosi');
 
 insert into niveles (nombre) values ('Administrador') , ('Asesor');
 
@@ -43,12 +43,12 @@ INSERT INTO `users` (`id`, `id_nivel`, `username`, `password`, `id_persona`, `re
 (9, 2, 'username6098', '$2y$10$7ypTmTnbFeGIH1VjXx4CIOnopcJ39FLWcmqVRNdkETrP9gs1YgpMa', 14, NULL, '2020-01-22 06:55:19', '2020-01-22 06:55:19'),
 (10, 2, 'username9226', '$2y$10$C.u8mavSK8Ozh.6MMjxtn.VNJYfGwoam72Ir9r8oaNGAVb2FqBYsG', 15, NULL, '2020-01-22 06:55:28', '2020-01-22 06:55:28');
 
-INSERT INTO `clientes` (`id`, `id_persona`, `carnet`, `created_at`, `updated_at`, `id_ciudad_expedicion`, `id_ciudad_residencia`) VALUES
-(1, 2, 'cu4193', '2020-01-22 06:54:29', '2020-01-22 06:54:29',1,1),
-(2, 3, 'cu7574', '2020-01-22 06:54:30', '2020-01-22 06:54:30',2,2),
-(3, 4, 'cu6133', '2020-01-22 06:54:31', '2020-01-22 06:54:31',3,3),
-(4, 5, 'cu5615', '2020-01-22 06:54:32', '2020-01-22 06:54:32',4,4),
-(5, 6, 'cu4996', '2020-01-22 06:54:33', '2020-01-22 06:54:33',5,5);
+INSERT INTO `clientes` (`id`, `id_ubicacion` ,`id_persona`, `carnet`, `created_at`, `updated_at`, `id_ciudad_expedicion`, `id_ciudad_residencia`) VALUES
+(1, 1, 2, 'cu4193', '2020-01-22 06:54:29', '2020-01-22 06:54:29',1,1),
+(2, 1, 3, 'cu7574', '2020-01-22 06:54:30', '2020-01-22 06:54:30',2,2),
+(3, 1, 4, 'cu6133', '2020-01-22 06:54:31', '2020-01-22 06:54:31',3,3),
+(4, 1, 5, 'cu5615', '2020-01-22 06:54:32', '2020-01-22 06:54:32',4,4),
+(5, 1, 6, 'cu4996', '2020-01-22 06:54:33', '2020-01-22 06:54:33',5,5);
 
 INSERT INTO `universidades` (nombre) VALUES
 ('Universidad Mayor de San Francisco Xavier'),
@@ -103,7 +103,8 @@ INSERT INTO `facultades` (nombre) VALUES
 ('FACULTAD DE CIENCIAS Y TECNOLOGÍAS DE LA SALUD'),
 ('FACULTAD DE ARQUITECTURA Y CIENCIAS DEL HÁBITAT'),
 ('FACULTAD DE INGENIERÍA CIVIL'),
-('FACULTAD DE MECÁNICA');
+('FACULTAD DE MECÁNICA'),
+('N/A');
 
 insert into carreras (id_facultad, nombre) values 
 (1, 'DERECHO'),
@@ -166,7 +167,8 @@ insert into carreras (id_facultad, nombre) values
 (16, 'INGENIERÍA ELÉCTRICA'),
 (16, 'INGENIERÍA ELECTRÓNICA'),
 (16, 'INGENIERÍA MECATRÓNICA'),
-(16, 'INGENIERÍA ELECTROMECÁNICA');
+(16, 'INGENIERÍA ELECTROMECÁNICA'),
+(null,'N/A');
 
 INSERT INTO `asesores` (`id`, `id_usuario`, `id_carrera`, `sexo`, `created_at`, `updated_at`) VALUES
 (1, 7, 1, '1', '2020-01-22 06:55:00', '2020-01-22 06:55:00'),
@@ -202,7 +204,8 @@ INSERT INTO `medios` (nombre) VALUES
 
 INSERT INTO `tipos_cotizacion` (nombre) VALUES
 ('Semestralizado'),
-('Anualizado');
+('Anualizado'),
+('N/A');
 
 INSERT INTO `niveles_academicos` (nombre) VALUES
 ('Bachiller'),
@@ -247,3 +250,6 @@ INSERT INTO `tipos_egreso` (nombre) VALUES
 ('Gastos'),
 ('Planillas de sueldos'),
 ('Otros');
+
+INSERT INTO `caja_chica` (monto) VALUES
+(0);

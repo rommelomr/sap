@@ -1,7 +1,9 @@
 @extends('layouts.app')
 @extends('layouts.menu')
 @extends('layouts.navbar')
-	
+@section('breadcrumbs')
+    <a href="#!" class="breadcrumb">Movimientos</a>
+@endsection
 @section('head')
 	<link rel="stylesheet" href="{{asset('css/movimientos/main.css')}}">	
 @endsection
@@ -19,34 +21,39 @@
 				</div>
 				<ul class="collapsible">
 					@if(session('cargas') || isset($_GET['cargas']))
+						@php session()->forget('cargas'); @endphp
 				    	<li class="active">
 					@else
 				    	<li>
 					@endif
 				    	<div class="collapsible-header"><i class="material-icons">input</i>Cargas</div>
 				    	<div class="collapsible-body">
-				    		<div class="row" style="margin:0">
-				    			<form action="{{route('buscar_carga')}}">
-				    				<div class="input-field col s4">
-				    					<input type="month" name="date" placeholder="Buscar egreso" value="{{date('Y-m')}}">
+				    		<form action="{{route('buscar_carga')}}">
+				    			<div class="row" style="margin:0;padding:0">
+
+				    				<div class="input-field col s4" style="margin-top:0;margin-bottom:0;">
+				    					<!--input type="month" name="date" placeholder="Buscar egreso" value="{{date('Y-m')}}"-->
 				    					<center>
-				    						<span class="helper-text">AAAA/MM</span>
+				    						<!--span class="helper-text">AAAA/MM</span-->
 				    					</center>
 				    				</div>
-				    				<div class="input-field col s4">
-				    					<input type="text" name="string" placeholder="Buscar retiro">
+				    			</div>
+				    			<div class="row" style="margin:0;">
+
+				    				<div class="input-field col s7 offset-s4" style="margin-top:0;margin-bottom:0;">
+				    					<input type="text" name="string" placeholder="Buscar carga">
 				    				</div>
-				    				<div class="input-field col s4">
-				    					<button class="btn blue darken-2">Buscar</button>
+
+				    				<div class="input-field col s1" style="margin-top:0;">
+				    					<button href="#" class="btn-flat btn"><i class="material-icons">search</i></button>
 				    				</div>
-				    			</form>
-    				    		<div class="row" style="margin:0">
-					    			<div class="col s12">
-					    				<center>
-					    					<a href="{{route('movimientos')}}">Resetear resultados</a>
-					    				</center>
-					    			</div>
-					    		</div>
+				    			</div>
+
+				    		</form>
+				    		<div class="row" style="margin:0">
+				    			<div class="col s12">
+				    				<a href="{{route('movimientos')}}">Resetear resultados</a>
+				    			</div>
 				    		</div>
 				    		<table class="centered">
 				    			<thead>
@@ -78,6 +85,7 @@
 				    	
 				    </li>
 				    @if(session('tab_retiro_caja_chica') || isset($_GET['retiros']))
+				    	@php session()->forget('tab_retiro_caja_chica'); @endphp
 				    	<li class="active">
 				    @else
 				    	<li>
@@ -96,12 +104,16 @@
 				    					<form id="retirar_caja_chica" action="{{route('retirar_monto')}}" method="post">
 				    						@csrf
 				    						<div class="input-field">
+
 				    							<input type="text" name="monto" value="{{old('monto')}}">
 				    							<span class="helper-text">Monto</span>
+
 				    						</div>
 				    						<div class="input-field">
+
 				    							<input type="text" name="concepto" value="{{old('concepto')}}">
 				    							<span class="helper-text">Concepto</span>
+
 				    						</div>
 				    						<div class="input-field">
 				    							<center>
@@ -116,28 +128,33 @@
 				    				<div class="row">
 				    					<div class="col s12">
 						    				<div class="card-panel">
-									    		<div class="row" style="margin:0">
-									    			<form action="{{route('buscar_retiro')}}">
-									    				<div class="input-field col s6">
-									    					<input type="month" name="date" placeholder="Buscar egreso" value="{{date('Y-m')}}">
+									    		<form action="{{route('buscar_retiro')}}">
+									    			<div class="row" style="margin:0">
+
+									    				<div class="input-field col s6" style="margin-top:0;margin-bottom:0;">
+									    					<!--input type="month" name="date" placeholder="Buscar egreso" value="{{date('Y-m')}}"-->
 									    					<center>
-									    						<span class="helper-text">AAAA/MM</span>
+									    						<!--span class="helper-text">AAAA/MM</span-->
 									    					</center>
 									    				</div>
-									    				<div class="input-field col s6">
+									    			</div>
+									    			<div class="row" style="margin:0">
+
+									    				<div class="input-field col s7 offset-s4" style="margin-top:0;margin-bottom:0;">
+
 									    					<input type="text" name="string" placeholder="Buscar retiro">
 									    				</div>
-									    				<div class="input-field col s12">
+									    				<div class="input-field col s1" style="margin-top:0;margin-bottom:0;">
 									    					<center>
-									    						<button class="btn blue darken-2">Buscar</button>
+									    						<button class="btn btn-flat"><i class="material-icons">search</i></button>
 									    					</center>
 									    				</div>
-									    			</form>
+
+									    			</div>
+									    		</form>
 									    		<div class="row" style="margin:0">
 									    			<div class="col s12">
-									    				<center>
-									    					<a href="{{route('movimientos')}}">Resetear resultados</a>
-									    				</center>
+									    				<a href="{{route('movimientos')}}">Resetear resultados</a>
 									    			</div>
 									    		</div>
 									    		<table class="centered">
@@ -179,6 +196,7 @@
 		</div>
 		<div class="col s12 xl6">
 			<div class="card-panel">
+
 				<div class="row">
 					<div class="col s12">
 						<center>
@@ -186,33 +204,42 @@
 						</center>
 					</div>
 				</div>
+
 				<ul class="collapsible">
-					@if(session('ingresos'))
+					@if(session('ingresos') || isset($_GET['ingresos']))
+					@php session()->forget('ingresos'); @endphp
 				    <li class="active">
 					@else
 				    <li>
 					@endif
 				    	<div class="collapsible-header"><i class="material-icons">input</i>Ingresos</div>
 				    	<div class="collapsible-body">
-				    		<div class="row" style="margin:0;padding: 0;">
+				    		<div class="row">
 				    			<a href="#modal-crear-ingreso" class="modal-trigger">Agregar ingreso</a>
 							</div>
-				    		<div class="row" style="margin:0;padding: 0;">
-				    			<form action="{{asset('buscar_ingreso')}}">
-				    				<div class="input-field col s4">
-				    					<input type="month" name="date" placeholder="Buscar egreso" value="{{date('Y-m')}}">
+				    		<form action="{{asset('buscar_ingreso')}}">
+
+				    			<div class="row" style="margin:0;">
+
+				    				<div class="input-field col s4" style="margin-top:0;margin-bottom:0">
+				    					<!--input type="month" name="date" placeholder="Buscar egreso" value="{{date('Y-m')}}"-->
 				    					<center>
-				    						<span class="helper-text">AAAA/MM</span>
+				    						<!--span class="helper-text">AAAA/MM</span-->
 				    					</center>
 				    				</div>
-				    				<div class="input-field col s4">
+
+				    			</div>
+				    			<div class="row" style="margin:0;">
+				    				<div class="input-field col s7 offset-s4" style="margin-top:0;margin-bottom:0">
 				    					<input type="text" name="string" placeholder="Buscar ingreso">
 				    				</div>
-				    				<div class="input-field col s4">
-				    					<button class="btn blue darken-2"><i class="material-icons">search</i></button>
+
+				    				<div class="input-field col s1" style="margin-top:0;margin-bottom:0">
+				    					<button class="btn btn-flat darken-2"><i class="material-icons">search</i></button>
 				    				</div>
-				    			</form>
-				    		</div>
+
+				    			</div>
+				    		</form>
 				    		<div class="row" style="margin:0">
 				    			<div class="col s12">
 				    				<center>
@@ -247,7 +274,8 @@
 				    	</div>
 				    	
 				    </li>
-					@if(session('egresos'))
+					@if(session('egresos') || isset($_GET['egresos']))
+					@php session()->forget('egresos'); @endphp
 				    	<li class="active">
 					@else
 				    	<li>
@@ -265,22 +293,24 @@
 				    				<div class="row">
 				    					<div class="col s12">
 						    				<div class="card-panel">
-									    		<div class="row" style="margin:0">
-									    			<form action="{{asset('buscar_egreso')}}">
-									    				<div class="input-field col s4">
-									    					<input type="month" name="date" placeholder="Buscar egreso" value="{{date('Y-m')}}">
+									    		<form action="{{asset('buscar_egreso')}}">
+									    			<div class="row" style="margin:0">
+									    				<div class="input-field col s4" style="margin-top:0;margin-bottom:0">
+									    					<!--input type="month" name="date" placeholder="Buscar egreso" value="{{date('Y-m')}}"-->
 									    					<center>
-									    						<span class="helper-text">AAAA/MM</span>
+									    						<!--span class="helper-text">AAAA/MM</span-->
 									    					</center>
 									    				</div>
-									    				<div class="input-field col s4">
+									    			</div>
+									    			<div class="row" style="margin:0">
+									    				<div class="input-field col s7 offset-s4" style="margin-top:0;margin-bottom:0">
 									    					<input type="text" name="string" placeholder="Buscar egreso">
 									    				</div>
-									    				<div class="input-field col s4">
-									    					<button class="btn blue darken-2">Buscar</button>
+									    				<div class="input-field col s1" style="margin-top:0;margin-bottom:0">
+									    					<button class="btn btn-flat darken-2"><i class="material-icons">search</i></button>
 									    				</div>
-									    			</form>
-									    		</div>
+									    			</div>
+									    		</form>
 									    		<div class="row" style="margin:0">
 									    			<div class="col s12">
 									    				<center>
@@ -309,8 +339,10 @@
 									    					</tr>
 									    				@endforelse
 									    			</tbody>
-									    			{{$egresos->appends(['egresos' => $egresos->currentPage()])->links()}}
 									    		</table>
+									    		<center>
+										    		{{$egresos->appends(['egresos' => $egresos->currentPage()])->links()}}
+									    		</center>
 						    				</div>
 				    					</div>
 				    				</div>
@@ -319,8 +351,8 @@
 				    	</div>
 				    	
 				    </li>
-				    
 				</ul>
+
 			</div>
 		</div>
 	</div>
@@ -337,22 +369,22 @@
 			<form action="{{route('crear_ingreso')}}" method="POST">
 				@csrf
 				<div class="input-field col s12 l6">
-					<input type="text" name="monto" value="{{old('monto')}}">
+					<input type="text" name="ingreso_monto" value="{{old('ingreso_monto')}}">
 					<span class="helper-text">Monto</span>
 				</div>
 				<div class="input-field col s12 l6">
-					<input type="text" name="concepto" value="{{old('concepto')}}">
+					<input type="text" name="ingreso_concepto" value="{{old('ingreso_concepto')}}">
 					<span class="helper-text">Concepto</span>
 				</div>
 				<div class="input-field col s12 l6">
-					<input type="text" name="numero_recibo" value="{{old('numero_recibo')}}">
+					<input type="text" name="ingreso_numero_recibo" value="{{old('ingreso_numero_recibo')}}">
 					<span class="helper-text">Número de recibo</span>
 				</div>
 				<div class="input field col s12 l6">
-					<select name="id_tipo_pago" class="browser-default">
+					<select name="ingreso_id_tipo_pago" class="browser-default">
 						<option disabled selected>Tipo de Pago</option>
 						@foreach($tipos_pago as $tipo_pago)
-							@if(old('id_tipo_pago') == $tipo_pago->id)
+							@if(old('ingreso_id_tipo_pago') == $tipo_pago->id)
 								<option selected value="{{$tipo_pago->id}}">{{$tipo_pago->nombre}}</option>
 							@else
 								<option value="{{$tipo_pago->id}}">{{$tipo_pago->nombre}}</option>
@@ -415,23 +447,23 @@
 			<form action="{{route('crear_egreso')}}" method="POST">
 				@csrf
 				<div class="input-field col s12 l6">
-					<input type="text" name="monto" value="{{old('monto')}}">
+					<input type="text" name="egreso_monto" value="{{old('egreso_monto')}}">
 					<span class="helper-text">Monto</span>
 				</div>
 				<div class="input-field col s12 l6">
-					<input type="text" name="concepto" value="{{old('concepto')}}">
+					<input type="text" name="egreso_concepto" value="{{old('egreso_concepto')}}">
 					<span class="helper-text">Concepto</span>
 				</div>
 				
 				<div class="input-field col s12 l6">
-					<input type="text" name="numero_recibo" value="{{old('numero_recibo')}}">
+					<input type="text" name="egreso_numero_recibo" value="{{old('egreso_numero_recibo')}}">
 					<span class="helper-text">Numero de recibo</span>
 				</div>
 				<div class="input field col s6">
-					<select name="id_tipo_pago" class="browser-default">
+					<select name="egreso_id_tipo_pago" class="browser-default">
 						<option disabled selected>Tipo de Pago</option>
 						@foreach($tipos_pago as $tipo_pago)
-							@if(old('id_tipo_pago') == $tipo_pago->id)
+							@if(old('egreso_id_tipo_pago') == $tipo_pago->id)
 								<option selected value="{{$tipo_pago->id}}">{{$tipo_pago->nombre}}</option>
 							@else
 								<option value="{{$tipo_pago->id}}">{{$tipo_pago->nombre}}</option>
@@ -440,10 +472,10 @@
 					</select>
 				</div>
 				<div class="input field col s6">
-					<select name="id_tipo_egreso" class="browser-default">
+					<select name="egreso_id_tipo_egreso" class="browser-default">
 						<option disabled selected>Tipo de Egreso</option>
 						@foreach($tipos_egreso as $tipo_egreso)
-							@if(old('id_tipo_egreso') == $tipo_egreso->id)
+							@if(old('egreso_id_tipo_egreso') == $tipo_egreso->id)
 								<option selected value="{{$tipo_egreso->id}}">{{$tipo_egreso->nombre}}</option>
 							@else
 								<option value="{{$tipo_egreso->id}}">{{$tipo_egreso->nombre}}</option>
@@ -528,10 +560,10 @@
         	vars['modals'][2].open();
         @endif
         @if(session('ingreso'))
-        	vars['modals'][1].open();
+        	vars['modals'][0].open();
         @endif
         @if(session('carga'))
-        	vars['modals'][0].open();
+        	vars['modals'][1].open();
         @endif
 
         Mat.setEventIngresos(vars['modals'][3]);

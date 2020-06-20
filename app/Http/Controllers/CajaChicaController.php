@@ -53,44 +53,74 @@ class CajaChicaController extends Controller
         return $array;
     }
     public function buscarCarga(Request $request){
+/*
         $request->validate([
             'date' => ['required']
         ]);
+
         $input = explode('-',$request->date);
+
         if(count($input) === 2){
+
             $date = [
                 'y' => $input[0],
                 'm' => $input[1],
             ];
+
         }else{
+
             return redirect()->back()->with(['messages'=>['formato de fecha inválido']]);
+
         }
-        $movimientos = Movimiento::smartSearcher($request->string)->whereYear('created_at',$date['y'])->whereMonth('created_at',$date['m'])->where('tipo',1)->paginate(10,['*'], 'cargas');
+*/
+
+        //$movimientos = Movimiento::smartSearcher($request->string)->whereYear('created_at',$date['y'])->whereMonth('created_at',$date['m'])->where('tipo',1)->paginate(10,['*'], 'cargas');
+        $movimientos = Movimiento::smartSearcher($request->string)->where('tipo',1)->paginate(10,['*'], 'cargas');
+
         $array = $this->cargarRecursos(1);
+
         $array['cargas'] = $movimientos;
+
         session()->flash('cargas',true);
+
         return $array;
     }
     public function buscarRetiro(Request $request){
+/*
         $request->validate([
             'date' => ['required']
         ]);
+
         $input = explode('-',$request->date);
+
         if(count($input) === 2){
+
             $date = [
                 'y' => $input[0],
                 'm' => $input[1],
             ];
+
         }else{
+
             return redirect()->back()->with(['messages'=>['formato de fecha inválido']]);
+
         }
-        $movimientos = Movimiento::smartSearcher($request->string)->whereYear('created_at',$date['y'])->whereMonth('created_at',$date['m'])->where('tipo',2)->paginate(10,['*'], 'retiros');
+
+        
+*/
+
+        $movimientos = Movimiento::smartSearcher($request->string)->where('tipo',2)->paginate(10,['*'], 'retiros');
+
         $array = $this->cargarRecursos(2);
+
         $array['retiros'] = $movimientos;
+
         session()->flash('tab_retiro_caja_chica',true);
+
         return $array;
     }
     public function buscarIngreso(Request $request){
+/*
         $request->validate([
             'date' => ['required']
         ]);
@@ -103,13 +133,16 @@ class CajaChicaController extends Controller
         }else{
             return redirect()->back()->with(['messages'=>['formato de fecha inválido']]);
         }
-        $ingresos = Ingreso::smartSearcher($request->string)->whereYear('created_at',$date['y'])->whereMonth('created_at',$date['m'])->paginate(10,['*'], 'ingresos');
+*/        
+        //$ingresos = Ingreso::smartSearcher($request->string)->whereYear('created_at',$date['y'])->whereMonth('created_at',$date['m'])->paginate(10,['*'], 'ingresos');
+        $ingresos = Ingreso::smartSearcher($request->string)->paginate(10,['*'], 'ingresos');
         $array = $this->cargarRecursos(3);
         $array['ingresos'] = $ingresos;
         session()->flash('ingresos',true);
         return $array;
     }
     public function buscarEgreso(Request $request){
+        /*
         $request->validate([
             'date' => ['required']
         ]);
@@ -122,7 +155,9 @@ class CajaChicaController extends Controller
         }else{
             return redirect()->back()->with(['messages'=>['formato de fecha inválido']]);
         }
-        $egresos = Egreso::smartSearcher($request->string)->whereYear('created_at',$date['y'])->whereMonth('created_at',$date['m'])->paginate(10,['*'], 'egresos');
+        */
+        //$egresos = Egreso::smartSearcher($request->string)->whereYear('created_at',$date['y'])->whereMonth('created_at',$date['m'])->paginate(10,['*'], 'egresos');
+        $egresos = Egreso::smartSearcher($request->string)->paginate(10,['*'], 'egresos');
 
         $array = $this->cargarRecursos(4);
         $array['egresos'] = $egresos;
@@ -132,60 +167,60 @@ class CajaChicaController extends Controller
     
     public function crearEgreso(Request $request){
         $msg = [
-            'monto.required'=>'Debe ingresar un monto',
-            'monto.numeric'=>'El monto debe ser numérico',
-            'concepto.required'=>'Debe ingresar un concepto',
-            'numero_recibo.required'=>'Debe ingresar un número de recibo',
-            'numero_recibo.numeric'=>'El numero de recibo debe ser numérico',
-            'id_tipo_pago.required'=>'Debe ingresar un tipo de pago',
-            'id_tipo_pago.exists'=>'El tipo de pago no es válido',
-            'id_tipo_egreso.required'=>'Debe ingresar un tipo de egreso',
-            'id_tipo_egreso.exists'=>'El tipo de egreso no es válido',
+            'egreso_monto.required'=>'Debe ingresar un monto',
+            'egreso_monto.numeric'=>'El monto debe ser numérico',
+            'egreso_concepto.required'=>'Debe ingresar un concepto',
+            'egreso_numero_recibo.required'=>'Debe ingresar un número de recibo',
+            'egreso_numero_recibo.numeric'=>'El numero de recibo debe ser numérico',
+            'egreso_id_tipo_pago.required'=>'Debe ingresar un tipo de pago',
+            'egreso_id_tipo_pago.exists'=>'El tipo de pago no es válido',
+            'egreso_id_tipo_egreso.required'=>'Debe ingresar un tipo de egreso',
+            'egreso_id_tipo_egreso.exists'=>'El tipo de egreso no es válido',
         ];
         session()->flash('crear_egreso',true);
         $request->validate([
-          'monto' => ['required','numeric'],
-          'concepto' => ['required'],
-          'numero_recibo' => ['required','numeric'],
-          'id_tipo_pago' => ['required','exists:tipos_pago,id'],
-          'id_tipo_egreso' => ['required','exists:tipos_egreso,id'],
+          'egreso_monto' => ['required','numeric'],
+          'egreso_concepto' => ['required'],
+          'egreso_numero_recibo' => ['required','numeric'],
+          'egreso_id_tipo_pago' => ['required','exists:tipos_pago,id'],
+          'egreso_id_tipo_egreso' => ['required','exists:tipos_egreso,id'],
         ],$msg);
         session()->forget('crear_egreso');
         Egreso::create([
-          'monto' => $request->monto,
-          'concepto' => $request->concepto,
-          'numero_recibo' => $request->numero_recibo,
-          'id_tipo_pago' => $request->id_tipo_pago,
-          'id_tipo_egreso' => $request->id_tipo_egreso,
+          'egreso_monto' => $request->monto,
+          'egreso_concepto' => $request->concepto,
+          'egreso_numero_recibo' => $request->numero_recibo,
+          'egreso_id_tipo_pago' => $request->id_tipo_pago,
+          'egreso_id_tipo_egreso' => $request->id_tipo_egreso,
         ]);
         return redirect()->back()->with(['messages'=>['Egreso realizado exitosamente']]);
     }
     public function crearIngreso(Request $request){
         $msg = [
-            'monto.required' => 'El campo Monto es obligatorio',
-            'monto.numeric' => 'El campo Monto debe ser un número',
-            'concepto.required' => 'El campo Concepto es obligatorio',
-            'numero_recibo.required' => 'El campo Número de Recibo es obligatorio',
-            'numero_recibo.numeric' => 'El campo Npumero de Recibo debe ser un número',
-            'id_tipo_pago.required' => 'El campo Tipo de Pago es obligatorio',
-            'id_tipo_pago.numeric' => 'El campo Tipo de Pago no es válido',
-            'id_tipo_pago.exists' => 'El campo Tipo de Pago no es válido',
+            'ingreso_monto.required' => 'El campo Monto es obligatorio',
+            'ingreso_monto.numeric' => 'El campo Monto debe ser un número',
+            'ingreso_concepto.required' => 'El campo Concepto es obligatorio',
+            'ingreso_numero_recibo.required' => 'El campo Número de Recibo es obligatorio',
+            'ingreso_numero_recibo.numeric' => 'El campo Npumero de Recibo debe ser un número',
+            'ingreso_id_tipo_pago.required' => 'El campo Tipo de Pago es obligatorio',
+            'ingreso_id_tipo_pago.numeric' => 'El campo Tipo de Pago no es válido',
+            'ingreso_id_tipo_pago.exists' => 'El campo Tipo de Pago no es válido',
 
         ];
         session()->flash('ingreso',true);
         $request->validate([
-            'monto' => ['required','numeric'],
-            'concepto' => ['required'],
-            'numero_recibo' => ['required','numeric'],
-            'id_tipo_pago' => ['required','numeric','exists:tipos_pago,id'],
+            'ingreso_monto' => ['required','numeric'],
+            'ingreso_concepto' => ['required'],
+            'ingreso_numero_recibo' => ['required','numeric'],
+            'ingreso_id_tipo_pago' => ['required','numeric','exists:tipos_pago,id'],
         ]);
         session()->forget('ingreso');
         Ingreso::create([
             'id_tipo_ingreso' => 2,
-            'id_tipo_pago' => $request->id_tipo_pago,
-            'concepto' => $request->concepto,
-            'numero_recibo' => $request->numero_recibo,
-            'monto' => $request->monto,
+            'ingreso_id_tipo_pago' => $request->id_tipo_pago,
+            'ingreso_concepto' => $request->concepto,
+            'ingreso_numero_recibo' => $request->numero_recibo,
+            'ingreso_monto' => $request->monto,
         ]);
         return redirect()->back()->with(['messages'=>['Ingreso registrado exitosamente']]);
     }

@@ -1,9 +1,9 @@
 @extends('layouts.app')
 @extends('layouts.menu')
 @extends('layouts.navbar')
-	
-@section('head')
-	
+@section('breadcrumbs')
+    <a href="#!" class="breadcrumb">Personas</a>
+    <a href="#!" class="breadcrumb">Ver persona</a>
 @endsection
 @section('main')
 	<div class="container">
@@ -48,6 +48,23 @@
 								<span class="helper-text">Cedula</span>
 								<input type="text" name="cedula" value="{{$persona->cedula}}">
 							</div>
+							@if($rol == 'cliente')
+								<div class="input-field col s12 l6">
+
+									<span class="helper-text">Expedido</span>
+									<select name="expedicion">
+										@foreach($ciudades as $ciudad)
+											<option
+												@if($ciudad->id == $persona->cliente->expedicion->nombre)
+												 selected
+												@endif
+											value="{{$ciudad->id}}">{{$ciudad->nombre}}</option>
+										@endforeach
+										
+									</select>
+
+								</div>
+							@endif
 							<div class="input-field col s12 l6">
 								<span class="helper-text">Telefono</span>
 								<input type="text" name="telefono" value="{{$persona->telefono}}">
@@ -87,22 +104,7 @@
 						@if($rol == 'cliente')
 							<b>Datos de Cliente</b>
 							<div class="row">
-								
-								<div class="input-field col s12 l6">
 
-									<span class="helper-text">Expedicion C.I.</span>
-									<select name="expedicion">
-										@foreach($ciudades as $ciudad)
-											<option
-												@if($ciudad->id == $persona->cliente->expedicion->nombre)
-												 selected
-												@endif
-											value="{{$ciudad->id}}">{{$ciudad->nombre}}</option>
-										@endforeach
-										
-									</select>
-
-								</div>
 								<div class="input-field col s12 l6">
 
 									<span class="helper-text">Residencia</span>

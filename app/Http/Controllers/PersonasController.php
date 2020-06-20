@@ -9,6 +9,7 @@ use App\Asesor;
 use App\Cliente;
 use App\Carrera;
 use App\Ciudad;
+use App\Ubicacion;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StorePersonaRequest;
@@ -48,12 +49,14 @@ class PersonasController extends Controller
 
         $ciudades = Ciudad::all();
         $carreras = Carrera::all();
+        $ubicaciones = Ubicacion::all();
 
         return view('usuarios.see_person',[
             'rol' => $rol,
             'persona' => $persona,
             'ciudades' => $ciudades,
             'carreras' => $carreras,
+            'ubicaciones' => $ubicaciones,
         ]); 
     }
 
@@ -220,12 +223,14 @@ class PersonasController extends Controller
         $carreras = Carrera::all();
         $ciudades = Ciudad::all();
         $personas = Persona::smartSearcher($request->string)->paginate(25);
+        $ubicaciones = Ubicacion::all();
 
         return view('auth.users',[
             'pass'      =>  $pass,
             'carreras'  =>  $carreras,
             'ciudades'  =>  $ciudades,
             'personas'  =>  $personas,
+            'ubicaciones' => $ubicaciones,
         ]);        
     }
     public function updatePerson(Request $request){

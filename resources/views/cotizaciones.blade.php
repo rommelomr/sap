@@ -1,10 +1,13 @@
 @extends('layouts.app')
 @extends('layouts.navbar')
+@extends('layouts.menu')
 @section('head')
 	<link rel="stylesheet" href="{{asset('css/cotizaciones.css')}}">
 @endsection
+@section('breadcrumbs')
+    <a href="#!" class="breadcrumb">Cotizaciones</a>
+@endsection
 @section('main')
-@extends('layouts.menu')
   <div class="row">
     <div class="col s12 l10 offset-l1 card-panel">
     	<ul class="tabs">
@@ -208,7 +211,7 @@
 					    					
 					    					<a href="{{ route('cotizacion.pdf', $cotizacion->id)}}" class="tooltipped" data-position="top" data-tooltip="Ver cotización en PDF"><i class="material-icons">picture_as_pdf</i></a>
 
-					    					<a href="#" class="tooltipped" data-position="top" data-tooltip="Agregar observación"><i class="material-icons">message</i></a>
+					    					<!--a href="#" class="tooltipped" data-position="top" data-tooltip="Agregar observación"><i class="material-icons">message</i></a-->
 					    				</td>
 					    			</tr>
 
@@ -216,13 +219,15 @@
 					    		</tbody>
 					    	</table>
 						</div>
-						<div class="row">
-							<div class="col s12">
-								<center>
-									{{ $cotizaciones->links() }}
-								</center>
-							</div>
-						</div>			
+						@if(!session('see'))
+							<div class="row">
+								<div class="col s12">
+									<center>
+										{{ $cotizaciones->links() }}
+									</center>
+								</div>
+							</div>			
+						@endif
 
 	    			</div>
 	    		</div>
@@ -318,6 +323,7 @@
 										    		
 										    </select>								
 										</div>
+
 									</div>
 									<div class="row">
 
@@ -339,7 +345,7 @@
 										    	</div>
 										    </datalist>
 										</div>
-										<div class="input-field col s6">
+										<div class="input-field col s3">
 
 										    <select name="curso" class="browser-default">
 										    	<option disabled selected>Curso</option>
@@ -350,10 +356,27 @@
 										    		@endif
 										    		value="{{$i}}">{{$i}}°</option>
 										    	@endfor
+										    	<option value="0">N/A</option>
 										    </select>
 										</div>
+										<div class="input-field col s3">
+
+										    <select name="paralelo" class="browser-default">
+										    	<option disabled selected>Paralelo</option>
+										    	@for($i = 65; $i<=70; $i++)
+										    		<option 
+										    		@if(old('paralelo')==chr($i))
+										    			selected
+										    		@endif
+										    		value="{{chr($i)}}">{{chr($i)}}</option>
+										    	@endfor
+										    	<option value="0">N/A</option>
+										    </select>
+
 										</div>
-										<div class="row">
+
+									</div>
+									<div class="row">
 
 										<div class="input-field col s6">
 											<i class="material-icons prefix">clear_all</i>
@@ -398,21 +421,7 @@
 											<label for="observaciones">Observaciones</label>
 											<textarea id="observaciones" name="observacion">{{old('observacion')}}</textarea>
 										</div>
-										<div class="input-field col s6">
 
-										    <select name="paralelo" class="browser-default">
-										    	<option disabled selected>Paralelo</option>
-										    	@for($i = 65; $i<=70; $i++)
-										    		<option 
-										    		@if(old('paralelo')==chr($i))
-										    			selected
-										    		@endif
-										    		value="{{chr($i)}}">{{chr($i)}}</option>
-										    	@endfor
-										    </select>
-
-										</div>
-										
 										<div class="input-field col s6">
 											<i class="material-icons prefix">date_range</i>
 											<label for="validez">Validez</label>
@@ -575,14 +584,25 @@
 
 				</div>
 
-				<div class="input-field col s11 l5">
+				<div class="input-field col s11 l3">
 					<select name="edit_curso" id="edit_curso" class="select-editable browser-default">
 						<option disabled selected>Curso</option>
 						@for($i = 1; $i <= 10; $i++)
 							<option class="curso_option" value="{{$i}}">{{$i}}</option>
 						@endfor
+						<option value="0">N/A</option>
 					</select>
 					<span class="helper-text">Curso</span>
+				</div>
+				<div class="input-field col s11 l2">
+					<select name="edit_paralelo" id="edit_paralelo" class="select-editable browser-default">
+						<option disabled selected>Paralelo</option>
+				    	@for($i = 65; $i<=70; $i++)
+				    		<option class="paralelo_option" value="{{chr($i)}}">{{chr($i)}}</option>
+				    	@endfor
+						<option value="0">N/A</option>
+					</select>
+					<span class="helper-text">Paralelo</span>
 				</div>
 			</div>
 			<div class="row">
@@ -633,7 +653,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="input-field col s11 l5 offset-l1">
+				<div class="input-field col s11 l10 offset-l1">
 					<textarea class="input-editable unvaluable" id="edit_observaciones" name="edit_observacion" readonly
 
 						@if(old('edit_observacion')) 
@@ -644,15 +664,7 @@
 						></textarea>
 					<span class="helper-text">Observaciones <a href="#" class="edit" data-brother="edit_observaciones">(Editar)</a></span>
 				</div>
-				<div class="input-field col s11 l5">
-					<select name="edit_paralelo" id="edit_paralelo" class="select-editable browser-default">
-						<option disabled selected>Paralelo</option>
-				    	@for($i = 65; $i<=70; $i++)
-				    		<option class="paralelo_option" value="{{chr($i)}}">{{chr($i)}}</option>
-				    	@endfor
-					</select>
-					<span class="helper-text">Paralelo</span>
-				</div>
+
 			</div>
 			<div class="row">
 				<div class="input-field col s11 l5 offset-l1">
@@ -709,70 +721,7 @@
 		</form>
     </div>
   </div>
-    @if(isset($modal) && $modal)
-	  <!-- Modal Structure -->
-	  <div id="modal1" class="modal">
-	    <div class="modal-content">
-	    	<div class="row ">
-	    		<div class="col s6">
-	      			<h5><b>Cotización # 12345</b></h5>
-	    		</div>
-	    		<div class="col s6" align="right">
-	    			<b>dd/mm/aaaa hh:mm:ss</b> <br>
-	    		</div>
-	    	</div>
-	      <div class="card-panel">
-	      	<div class="row">
-	      		<div class="row ">
-		      		<div class="col s6">
-		      			<u><b>Información del cliente</b></u><br>
-		      			<b>Nombre:</b> Rommel Montoya<br>
-		      			<b>Dirección:</b> Dirección Ejemplo<br>
-		      			<b>Telefono:</b> 1234567<br>
-		      			<b>Celular:</b> 1234567<br>
-		      			
-		      		</div>
-		      		<div class="col s6">
-		      			<img src="{{asset('images/logo.png')}}" class="responsive-img">
-		      		</div>
-	      		</div>
-	      		
-	      		<table>
-	      			<tbody>
-		      			<tr><td><b>Nivel:</b></td> <td> Nivel ejemplo</td></tr>
-		      			<tr><td><b>Universidad:</b></td> <td> Universidad Ejemplo</td></tr>
-		      			<tr><td><b>Facultad:</b></td> <td> Facultad Ejemplo</td></tr>
-		      			<tr><td><b>Carrera:</b></td> <td> Carrera Ejemplo</td></tr>
-		      			<tr><td><b>Profesión:</b></td> <td> Profesion Ejemplo</td></tr>
-		      			<tr><td><b>Curso:</b></td> <td> Curso Ejemplo</td></tr>
-		      			<tr><td><b>Asesor:</b></td> <td> Alennys Palma</td></tr>
-		      			<tr><td><b>Modalidad:</b></td> <td> Modalidad Ejemplo</td></tr>
-		      			<tr><td><b>Validez:</b></td> <td> 123</td></tr>
-		      			<tr><td><b>Precio:</b></td> <td> 900</td></tr>
-		      			<tr><td><b>Tema:</b></td> <td> Tema ejemplo</td></tr>
-		      			<tr><td><b>Observaciones:</b></td> <td> Observaciones ejemplo</td></tr>
-						<tr><td><b>Avance:</b></td> <td> 35 %</td></tr>
-		      			<tr><td><b>Medio:</b></td> <td> Redes sociales</td></tr>
-	      				
-	      			</tbody>
-	      		</table>
 
-	      		<div class="col s6">
-	      			
-	      			
-	      		</div>
-	      		<div class="col s6">
-
-	      		</div>
-	      	</div>
-
-	      </div>
-	    </div>
-	    <div class="modal-footer">
-	      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
-	    </div>
-	  </div>
-    @endif
     
 <script>
 	let modal;

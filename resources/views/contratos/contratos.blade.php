@@ -3,28 +3,41 @@
 @extends('layouts.navbar')
 	
 @section('head')
+	<link rel="stylesheet" href="{{asset('css/contratos/main.css')}}">
+@endsection
+@section('breadcrumbs')
+    <a href="#!" class="breadcrumb">Contratos</a>
 @endsection
 @section('main')
 	<div class="row" style="margin-top:5%">
 		<div class="col s10 offset-s1">
 			<div class="card-panel">
-				<div class="row">
-					<form action="{{route('buscar_contratos')}}">
-						<div class="input-field col s2">
-							<input type="month" name="date" value="{{date('Y-m')}}">
-							<span class="helper-text">YYYY/MM</span>
+				<form action="{{route('buscar_contratos')}}">
+
+					<div class="row">
+
+						<div class="col s4">
+
+							<input type="month" name="date" value="{{date('Y-m')}}" class="browser-default">
+
 						</div>
-						<div class="input-field col s8">
-							<input type="text" name="string" placeholder="Buscar Contratos">
+
+						<div class="col s6 offset-s1">
+
+							<input style="width: 100%" type="text" name="string" placeholder="Buscar Contratos" class="browser-default"><br>
 							<a class="" href="{{route('contratos')}}">Resetear resultados</a>
+							<!--button class="btn blue darken-2">Buscar</button-->
 						</div>
-					</form>
-					<div class="col s2">
-						<center>
-							<button class="btn blue darken-2">Buscar</button>
-						</center>
+
+						<div class="col s1">
+
+							<label class="material-icons">search</label>
+
+						</div>
+
 					</div>
-				</div>
+
+				</form>
 				<div class="row">
 					<hr>
 					<table class="striped centered">
@@ -40,7 +53,7 @@
 						</thead>
 						<tbody>
 							@forelse($contratos as $contrato)
-								<tr>
+								<tr class="link" data-link="{{route('ver_contrato',$contrato->id)}}">
 									<td>{{$contrato->numero_contrato}}</td>
 									<td>{{$contrato->asesor->usuario->persona->nombre}} {{$contrato->asesor->usuario->persona->apellido}} </td>
 									<td>{{$contrato->cliente->persona->nombre}} {{$contrato->cliente->persona->apellido}} </td>
@@ -62,3 +75,5 @@
 	</div>
  
 @endsection
+
+<script type="module" src="{{asset('js/contratos/main.js')}}"></script>

@@ -1,8 +1,8 @@
 @extends('layouts.app')
 @extends('layouts.menu')
 @extends('layouts.navbar')
-	
-@section('head')
+@section('breadcrumbs')
+    <a href="#!" class="breadcrumb">Fichas económicas</a>
 @endsection
 @section('main')
 @php
@@ -49,7 +49,7 @@
 					</div>
 				</div>
 				<ul class="collapsible">
-					@if($tab === 'ingreso')
+					@if($tab == 'ingreso')
 				    	<li class="active">
 					@else
 				    	<li>
@@ -72,7 +72,6 @@
 				    				</td>
 				    				<td>
 				    					<a class="editar" data-button_brother="button_ingreso_{{$pagos->ingreso->id}}" data-input_brother="ingreso_{{$pagos->ingreso->id}}"><i class="material-icons">edit</i></a>
-				    					<a href="#"><i class="material-icons">remove_red_eyes</i></a>
 				    				</td>
 				    			</tr>
 				    				
@@ -87,7 +86,7 @@
 				    	</div>
 				    	
 				    </li>
-				    @if($tab === 'egreso')
+				    @if($tab == 'egreso')
 				    	<li class="active">
 					@else
 				    	<li>
@@ -110,7 +109,6 @@
 				    				</td>
 				    				<td>
 				    					<a class="editar" data-button_brother="button_pago_{{$pagos->egreso->id}}" data-input_brother="egreso_{{$pagos->egreso->id}}"><i class="material-icons">edit</i></a>
-				    					<a href="#"><i class="material-icons">remove_red_eyes</i></a>
 				    				</td>
 				    			</tr>
 				    				

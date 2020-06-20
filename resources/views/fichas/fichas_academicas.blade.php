@@ -1,9 +1,9 @@
 @extends('layouts.app')
 @extends('layouts.menu')
 @extends('layouts.navbar')
-	
-@section('head')
-	
+
+@section('breadcrumbs')
+    <a href="#!" class="breadcrumb">Fichas académicas</a>
 @endsection
 @section('main')
 	<div class="row">
@@ -18,10 +18,10 @@
 				</nav>
 				<div class="row">
 					<div class="col s5 offset-s6">
-						<form action="#">
+						<form action="{{route('buscar_fichas_academicas')}}">
 							<div class="input-field">
 								<label for="buscar">Cliente</label>
-								<input id="buscar" type="text">
+								<input id="string" type="text" name="string">
 								<i class="material-icons prefix">search</i>
 							</div>
 						</form>
@@ -61,18 +61,19 @@
 								<td>
 									<center>
 										<a href="{{route('ver_ficha',$ficha_consulta->id)}}"><i class="material-icons">remove_red_eye</i></a>
-										<a href="{{ route('ficha_academica_pdf', $ficha_consulta->id)}}" class="tooltipped" data-position="top" data-tooltip="Ver Ficha Academica en PDF"><i class="material-icons">picture_as_pdf</i></a>
-										<a href="{{ route('ficha_economica.pdf', $ficha_consulta->id)}}" class="tooltipped" data-position="top" data-tooltip="Ver Ficha Economica en PDF"><i class="material-icons">picture_as_pdf</i></a>
 									</center>
 								</td>
 							</tr>
 							@empty
-								No se han cargado fichas
+								No se han encontrado fichas
 							@endforelse
 							
 						</tbody>
 						
 					</table>
+					<center>
+						{{$fichas->links()}}
+					</center>
 				</div>
 			</div>
 		</div>
@@ -94,10 +95,10 @@
 								<b>Ficha #{{$ficha->id}}</b>
 								<a class='dropdown-trigger btn blue darken-2' data-target='opciones_ficha'>Opciones</a><br><br>
 								@if($ficha->asesor == null)
-								<label for="">No se puede crear una ficha económica sin antes adjuntar un contrato</label>
+									<label class="red-text text-lighteen-2">No se puede crear una ficha económica sin antes adjuntar un contrato</label>
 								@endif
 								<ul id='opciones_ficha' class='dropdown-content'>
-									@if($ficha->id_contrato != null && $id_nivel_usuario === 1)
+									@if($ficha->id_contrato != null && $id_nivel_usuario == 1)
 									    <li>
 											<a href="{{route('ficha_economica',$ficha->cotizacion->id)}}" class="modal-trigger"><i class="material-icons">attach_money</i> Pagos</a>
 									    </li>
@@ -156,7 +157,7 @@
 										@if($ficha->id_asesor != null)
 											{{$ficha->contrato->asesor->usuario->persona->nombre}} {{$ficha->contrato->asesor->usuario->persona->apellido}}
 										@else
-											<a href="#">Establecer</a>
+											<a href="#modal-contratos" class="modal-trigger">Establecer</a>
 										@endif
 									</td>
 								</tr>
@@ -174,7 +175,7 @@
 										@if($ficha->plazo != null)
 											{{$ficha->plazo}}
 										@else
-											<a href="#">Establecer</a>
+											No definido
 										@endif
 
 									</td>
@@ -190,7 +191,7 @@
 										@if($ficha->fecha_fin != null)
 											{{$ficha->fecha_fin}}
 										@else
-											<a href="#">Establecer fecha fin</a>
+											<a href="#modal-editar-ficha" class="modal-trigger">Establecer fecha fin</a>
 										@endif
 									</td>
 								</tr>
@@ -225,6 +226,9 @@
 	@if(!session('index') && isset($ficha))
 		<div id="modal-editar-ficha" class="modal bottom-sheet modal-fixed-footer">
 			<div class="modal-content" style="padding: 0;">
+				<div class="row" style="margin:0;padding:0">
+					<h5>Editar ficha</h5>
+				</div>
 				<div class="row" >
 						<form action="{{route('editar_ficha')}}" method="post" id="editar-ficha-form">
 							<input hidden name="edit_id" id="edit_id" value="{{$ficha->id}}">
@@ -306,11 +310,8 @@
 					<form action="{{route('agregar_observacion')}}" method="POST" style="margin:0;padding:0">
 						@csrf
 						<input hidden value="{{$ficha->id}}" name="id_ficha">
-						<div class="input-field col s10">
-							<label for="comentario">Agregar Observacion</label>
-							<input type="text" id="comentario" name="observacion">
+							<input type="text" id="comentario" placeholder="Agregar un comentario" name="observacion" class="browser-default left" style="height: 90%; width:100%">
 							<input hidden type="submit">
-						</div>
 					</form>
 				</div>
 			</div>
@@ -336,9 +337,9 @@
 							@endif
 
 							@if(old('asesor'))
-								<input id="buscar_asesor" type="text" list="asesores" name="asesor" value="{{old('asesor')}}">
+								<input autocomplete="off" id="buscar_asesor" type="text" list="asesores" name="asesor" value="{{old('asesor')}}">
 							@else
-								<input id="buscar_asesor" type="text" list="asesores" name="asesor">
+								<input autocomplete="off" id="buscar_asesor" type="text" list="asesores" name="asesor">
 							@endif
 							<datalist id="asesores">
 								@foreach($asesores as $asesor)
@@ -375,9 +376,9 @@
 								<input hidden id="id_daf" type="text" name="id_daf">
 							@endif
 							@if(old('buscar_daf'))
-								<input id="buscar_daf" type="text" list="dafs" name="buscar_daf" value="{{old('buscar_daf')}}">
+								<input autocomplete="off" id="buscar_daf" type="text" list="dafs" name="buscar_daf" value="{{old('buscar_daf')}}">
 							@else
-								<input id="buscar_daf" type="text" list="dafs" name="buscar_daf">
+								<input autocomplete="off" id="buscar_daf" type="text" list="dafs" name="buscar_daf">
 							@endif
 							<datalist id="dafs">
 								@foreach($asesores as $asesor)

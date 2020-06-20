@@ -31,9 +31,30 @@ use App\Universidad;
 
 class FichasAcademicasController extends Controller
 {
+    public function buscarFichasAcademicas(Request $request){
+        
+        $fichas = FichaAcademica::smartSearcher($request->string)->with('cotizacion');
+        $user = \Auth::user();
+        if($user->id_nivel != 1){
+
+            $fichas = $fichas->where('id_asesor',$user->asesor->id);
+
+        }
+
+        $fichas = $fichas->paginate(10);
+
+        $observaciones = [];
+
+        return view('fichas.fichas_academicas',[
+            'fichas'=>$fichas,
+            'observaciones'=>$observaciones
+        ]);
+
+
+    }
     private function consultarFichas($user){
 
-        if($user->id_nivel === 1){
+        if($user->id_nivel == 1){
             $fichas = FichaAcademica::with('cotizacion')->paginate(10);
 
         }else{
@@ -70,9 +91,22 @@ class FichasAcademicasController extends Controller
 
         $request->validate([
             'edit_id'=>'required|exists:fichas_academicas,id',
-            'edit_fecha_inicio'=>'date|after:'.date('Y-m-d',strtotime('yesterday')),
-            'edit_fecha_fin'=>['date','different:edit_fecha_inicio','after:'.date('Y-m-d',strtotime('today')),Rule::requiredIf(function()use($request){
+            'edit_fecha_inicio'=>[
+                'nullable',
+                'date',
+                'after:'.date('Y-m-d',strtotime('yesterday'))
+            ],
+            'edit_fecha_fin'=>[
+                'nullable',
+                'date',
+                'different:edit_fecha_inicio',
+
+                'after:'.date('Y-m-d',strtotime('today')),
+
+                Rule::requiredIf(function()use($request){
+
                     return $request->edit_fecha_inicio != null;
+
             })],
             'edit_id_etapa'=>'exists:etapas,id',
         ]);
@@ -80,17 +114,21 @@ class FichasAcademicasController extends Controller
 
         $ficha = FichaAcademica::find($request->edit_id);
 
-        $ficha->fecha_inicio = $request->edit_fecha_inicio;
+        if($request->edit_fecha_inicio != null){
 
-        $ficha->fecha_fin = $request->edit_fecha_fin;
+            $ficha->fecha_inicio = $request->edit_fecha_inicio;
 
-        $date_one = new DateTime($request->edit_fecha_inicio);
-        $date_two = new DateTime($request->edit_fecha_fin);
-        $plazo = $date_one->diff($date_two);
+            $ficha->fecha_fin = $request->edit_fecha_fin;
+            $date_one = new DateTime($request->edit_fecha_inicio);
+            $date_two = new DateTime($request->edit_fecha_fin);
+            $plazo = $date_one->diff($date_two);
+            $ficha->plazo = $plazo->days;
+        }
+        if($request->edit_id_etapa != null){
+            
+            $ficha->id_etapa = $request->edit_id_etapa;
+        }
 
-        $ficha->plazo = $plazo->days;
-
-        $ficha->id_etapa = $request->edit_id_etapa;
         $ficha->save();
         return redirect()->back()->with(['message'=>[
             'Datos de ficha académica actualizados'
@@ -145,8 +183,8 @@ class FichasAcademicasController extends Controller
         $user = User::with('asesor')->find(Auth::user()->id);
         //$auth = Auth::user();
 
-        if($user->id_nivel !== 1){
-            if($ficha->id_asesor !== $user->asesor->id){
+        if($user->id_nivel != 1){
+            if($ficha->id_asesor != $user->asesor->id){
                 return redirect()->route('fichas_academicas')->with(['messages'=>['Usted no tiene acceso a esta ficha']]);
             }
         }
@@ -191,48 +229,39 @@ class FichasAcademicasController extends Controller
         
     	return redirect()->route('ver_ficha',['id'=>$ficha->id]);
     }
-    public function exportPdffichaA($id)
-    {
+
+    public function exportPdffichaA($id){
+
         $ficha = FichaAcademica::with(['cliente'=>function($query){
+
             $query->with('persona');
+
         },'asesor'=>function($query){
+
             $query->with(['usuario'=>function($query){
+
                 $query->with('persona');
+
             }]);
-        },'contrato','cotizacion'=>function($query){
+
+        },'contrato'
+
+        ,'cotizacion'=>function($query){
+
             $query->with('fichaEconomica');
-        }   ,'etapa'])->find($id);
-        $auth = Auth::user();
-        if($auth->id_nivel != 1){
-            if($ficha->id_asesor != $auth->asesor->id){
-                return redirect()->route('fichas_academicas')->with(['messages'=>['Usted no tiene acceso a esta ficha']]);
-            }
-        }
 
-        $asesores = Asesor::with(['usuario'=>function($query){
-            $query->with('persona');
-        }])->get();
+        },'etapa'])->find($id);
+
+
         $observaciones = ObservacionFicha::where('id_ficha',$id)->paginate(10);
-        $etapas = Etapa::all();
 
-        $user = User::with('asesor')->find(Auth::user()->id);
-        if($user->id_nivel == 1){
-            $fichas = FichaAcademica::with('cotizacion')->paginate(10);
+        
 
-        }else{
-            $fichas = FichaAcademica::where('id_asesor',$user->asesor->id)->with('cotizacion')->paginate(10);
-
-        }
-        $tipos_contrato = TipoContrato::all();
+        //$user = User::with('asesor')->find(Auth::user()->id);
 
         $pdf = PDF::loadView('pdf.fichas_academicas',[
             'ficha' => $ficha,
-            'fichas' => $fichas,
-            'etapas' => $etapas,
             'observaciones' => $observaciones,
-            'asesores' => $asesores,
-            'tipos_contrato' => $tipos_contrato,
-            'id_nivel_usuario' => $user->id_nivel,
         ]);
         
         return $pdf->setPaper('a4')->stream();

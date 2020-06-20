@@ -25,12 +25,13 @@ Route::post('login_user', 'Auth\LoginController@login')->name('login_user');
 Route::get('filtrar_carreras', 'CotizacionesController@filtrarCarreras')->name('filtrar_carreras')->middleware('auth');
 Route::get('cotizaciones', 'CotizacionesController@index')->name('cotizaciones')->middleware('auth');
 Route::get('buscarCotizaciones', 'CotizacionesController@buscarCotizaciones')->middleware('auth')->name('buscarCotizaciones');
-Route::get('cotizacion/{id}', 'CotizacionesController@buscarCotizacion')->middleware('auth')->name('cotizacion');
+
 
 Route::post('modificar_cotizacion', 'CotizacionesController@modificarCotizacion')->middleware('roles:1')->name('modificar_cotizacion');
 Route::post('guardarCotizacion', 'CotizacionesController@guardarCotizacion')->name('guardarCotizacion')->middleware('roles:1');
 
 //Fichas
+Route::get('buscar_fichas_academicas', 'FichasAcademicasController@buscarFichasAcademicas')->middleware('auth')->name('buscar_fichas_academicas');
 Route::get('fichas_academicas', 'FichasAcademicasController@index')->middleware('auth')->name('fichas_academicas');
 Route::get('fichas_academicas/{id}', 'FichasAcademicasController@verFicha')->middleware('auth')->name('ver_ficha');
 Route::get('fichas_economica/{id}', 'FichasEconomicasController@verFicha')->name('ficha_economica')->middleware('roles:1');
@@ -50,7 +51,11 @@ Route::post('pagar_asesor', 'FichasEconomicasController@pagarAsesor')->name('pag
 Route::post('pagar_cliente', 'FichasEconomicasController@pagarCliente')->name('pagar_cliente')->middleware('roles:1');
 
 //Contratos
+Route::get('editar_contrato','ContratosController@editarContrato')->name('editar_contrato')->middleware('roles:1');
 Route::get('contratos','ContratosController@index')->name('contratos')->middleware('roles:1');
+
+Route::get('contratos/{id}','ContratosController@verContrato')->name('ver_contrato')->middleware('roles:1');
+
 Route::post('crear_contrato','ContratosController@crearContrato')->name('crear_contrato')->middleware('roles:1');
 Route::get('buscar_contratos','ContratosController@buscarContrato')->name('buscar_contratos')->middleware('roles:1');
 

@@ -14,20 +14,35 @@ class Movimiento extends Model
     }
 
     public static function smartSearcher($string){
+
     	$movimiento = Movimiento::where(function($query)use($string){
-    		$query->orWhere('monto','like','%'.$string.'%')
+
+    		$query->where('monto','like','%'.$string.'%')
+
     		->orWhere('concepto','like','%'.$string.'%')
-    		->orWhere('monto','like','%'.$string.'%');
+
+    		->orWhere('monto','like','%'.$string.'%')
+            
+            ->orWhere('created_at','like','%'.$string.'%');
+
     	})->orWhereHas('usuario',function($query)use($string){
+
     		$query->whereHas('persona',function($query)use($string){
-    			$query->orWhere('nombre','like','%'.$string.'%')
+
+    			$query->where('nombre','like','%'.$string.'%')
+
     			->orWhere('apellido','like','%'.$string.'%')
     			->orWhere('cedula','like','%'.$string.'%')
     			->orWhere('email','like','%'.$string.'%');
+
     		});
+
     	})->with(['usuario'=>function($query){
+
     		$query->with('persona');
+
     	}]);
+
     	return $movimiento;
     }
 

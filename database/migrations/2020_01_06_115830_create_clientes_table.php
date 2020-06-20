@@ -25,6 +25,9 @@ class CreateClientesTable extends Migration
             $table->unsignedBigInteger('id_ciudad_residencia');
             $table->foreign('id_ciudad_residencia')->references('id')->on('ciudades')->onDelete('cascade');
 
+            $table->unsignedBigInteger('id_ubicacion');
+            $table->foreign('id_ubicacion')->references('id')->on('ubicaciones')->onDelete('cascade');
+
             $table->string('carnet', 250);
 
             $table->timestamps();

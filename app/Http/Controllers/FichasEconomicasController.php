@@ -119,6 +119,7 @@ class FichasEconomicasController extends Controller
     }
     
     public function verFicha($id){
+        
         $ficha = FichaEconomica::with(['pagosAsesor'=>function($query){
                 $query->with('egreso');
             },'pagosCliente'=>function($query){

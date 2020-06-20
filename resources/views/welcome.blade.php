@@ -1,7 +1,9 @@
 @extends('layouts.app')
 @extends('layouts.menu')
 @extends('layouts.navbar')
-
+@section('breadcrumbs')
+    <a href="#!" class="breadcrumb">Principal</a>
+@endsection
 @section('main')
     <div class="row">
         

@@ -49,52 +49,6 @@ class CotizacionesController extends Controller
         return view('cotizaciones', compact('resultadosBusqueda','niveles','universidades','facultades','carreras','profesiones','grados','modalidades','medios'));
     }
 
-/*
-    Head
-*/
-    public static function buscarCotizacion($id){
-
-        $cotizaciones = Cotizacion::with(['cliente'=>function($query){
-            $query->with('persona');
-        },'universidad','nivelAcademico','cotizacionGeneral'=>function($query){
-            $query->with(['carrera','facultad']);
-        },'cotizacionPosgrado','grado','modalidad','tipo_cotizacion','medio','ficha'])->where('id',$id)->paginate(10);
-        session()->flash('tab',2);
-
-        $cotizacion = Cotizacion::with(['cliente','universidad','nivelAcademico','cotizacionGeneral'=>function($query){
-            $query->with(['facultad','carrera',]);
-        },'cotizacionPosgrado','grado','modalidad','medio'])->find($id);
-        session()->flash('edit_id_cotizacion',$cotizacion->id);
-        session()->flash('edit_nombre',$cotizacion->cliente->persona->nombre);
-        session()->flash('edit_direccion',$cotizacion->cliente->persona->direccion);
-        session()->flash('edit_celular',$cotizacion->cliente->persona->celular);
-        session()->flash('edit_telefono',$cotizacion->cliente->persona->telefono);
-        session()->flash('edit_precio',$cotizacion->precio_total);
-        
-        session()->flash('edit_nivel',$cotizacion->id_nivel_academico != null ? $cotizacion->id_nivel_academico : null);
-        session()->flash('edit_universidad',$cotizacion->universidad != null ? $cotizacion->universidad->id : null);
-        session()->flash('edit_facultad',$cotizacion->cotizacionGeneral != null ? $cotizacion->cotizacionGeneral->id_facultad : null);
-        session()->flash('edit_carrera',$cotizacion->cotizacionGeneral != null ? $cotizacion->cotizacionGeneral->id_carrera : null);
-        session()->flash('edit_profesion',$cotizacion->id_profesion != null ? $cotizacion->id_profesion : null);
-        session()->flash('edit_tipo_cotizacion',$cotizacion->id_tipo_cotizacion != null ? $cotizacion->id_tipo_cotizacion : null);
-        session()->flash('edit_modalidad',$cotizacion->modalidad != null ? $cotizacion->modalidad->id : null);
-        session()->flash('edit_validez',$cotizacion->validez != null ? $cotizacion->validez : null);
-        session()->flash('edit_tema',$cotizacion->tema != null ? $cotizacion->tema : null);
-        session()->flash('edit_observacion',$cotizacion->observaciones != null ? $cotizacion->observaciones : null);
-        session()->flash('edit_avance',$cotizacion->avance != null ? $cotizacion->avance : null);
-        session()->flash('edit_medio',$cotizacion->medio != null ? $cotizacion->medio->id : null);
-        $niveles = NivelAcademico::all();
-        $universidades = Universidad::all();
-        $facultades = Facultad::all();
-        $carreras = Carrera::all();
-        $profesiones = Profesion::all();
-        $tipos_cotizacion = TipoCotizacion::all();
-        $modalidades = Modalidad::all();
-        $medios = Medio::all();
-
-        //dd($cotizacion);
-        return view('cotizaciones',compact('cotizacion','cotizaciones','niveles','universidades','facultades','carreras','profesiones','tipos_cotizacion','modalidades','medios'));
-    }
 
     public static function modificarCotizacion(Request $request){
         session()->flash('tab',2);
@@ -253,43 +207,82 @@ class CotizacionesController extends Controller
 */
             $auth = Auth::user();
         $cotizaciones = Cotizacion::where(function($query)use($string){
+
             $query->where('id','like','%'.$string.'%')
+
             ->orWhere('created_at','like','%'.$string.'%')
+
             ->orWhereHas('cliente',function($query)use($string){
-                        $query->where('carnet','like','%'.$string.'%')->orWhereHas('persona',function($query) use ($string){
-                            $query->where('cedula','like','%'.$string.'%');
-                        });
-                    })
-            ->orWhereHas('universidad',function($query) use ($string){
-                    $query->where('nombre','like','%'.$string.'%');
-                })
+
+                $query->where('carnet','like','%'.$string.'%')
+
+                ->orWhereHas('persona',function($query) use ($string){
+
+                    $query->where('cedula','like','%'.$string.'%')
+                    ->orWhere('nombre','like','%'.$string.'%')
+                    ->orWhere('email','like','%'.$string.'%')
+                    ->orWhere('celular','like','%'.$string.'%')
+                    ->orWhere('direccion','like','%'.$string.'%')
+                    ->orWhere('apellido','like','%'.$string.'%');
+                });
+            })
             ->orWhereHas('nivelAcademico',function($query) use ($string){
+
+                  $query->where('nombre','like','%'.$string.'%');
+            })
+            ->orWhereHas('cotizacionUniversitaria',function($query) use ($string){
+
+                $query->whereHas('universidad',function($query) use ($string){
                     $query->where('nombre','like','%'.$string.'%');
+
                 })
-            ->orWhereHas('cotizacionGeneral',function($query) use ($string){
-                    $query->orWhereHas('carrera',function($query)use($string){
+                ->orWhereHas('cotizacionGeneral',function($query)use($string){
+
+                    $query->whereHas('carrera',function($query)use($string){
                         $query->where('nombre','like','%'.$string.'%');
+
                     })->orWhereHas('facultad',function($query)use($string){
+
                         $query->where('nombre','like','%'.$string.'%');
                     });
                 })
-            ->orWhereHas('tipo_cotizacion',function($query) use ($string){
-                    $query->where('nombre','like','%'.$string.'%');
-                })
+                ->orWhereHas('cotizacionPosgrado',function($query)use($string){
+                    $query->whereHas('posgrado',function($query)use($string){
+                        $query->where('nombre','like','%'.$string.'%');
+                    });
+                });
+            })
+            ->orWhereHas('tipoCotizacion',function($query) use ($string){
+
+                $query->where('nombre','like','%'.$string.'%');
+            })
             ->orWhereHas('modalidad',function($query) use ($string){
-                    $query->where('nombre','like','%'.$string.'%');
-                })
+
+                $query->where('nombre','like','%'.$string.'%');
+            })
             ->orWhereHas('medio',function($query) use ($string){
-                    $query->where('nombre','like','%'.$string.'%');
-                })
-            ->with(['cliente'=>function($query){
+
+                $query->where('nombre','like','%'.$string.'%');
+            });
+        })
+        ->with([
+            'cliente'=>function($query){
+
                 $query->with('persona');
-        },'universidad','nivelAcademico','cotizacionGeneral'=>function($query){
-            $query->with(['carrera','facultad']);
-        },'modalidad','medio','tipo_cotizacion','ficha'])->paginate(10);
-        })->whereHas('ficha',function($query)use($auth){
-            $query->where('id_asesor',$auth->asesor->id);
-        })->paginate(10);
+
+            },'nivelAcademico'
+            ,'modalidad'
+            ,'medio'
+            ,'tipoCotizacion'
+            ,'ficha'
+            ,'cotizacionUniversitaria'=>function($query){
+                $query->with([
+                    'cotizacionGeneral',
+                    'cotizacionPosgrado',
+                ]);
+            }
+        ])->paginate(10);
+        
 /*
         if($auth->id_nivel===1){
             $cotizaciones = $cotizaciones->paginate(10);
@@ -306,6 +299,7 @@ class CotizacionesController extends Controller
         $tipos_cotizacion = TipoCotizacion::all();
         $profesiones = Profesion::all();
         $modalidades = Modalidad::all();
+        $posgrados = Posgrado::all();
         $medios = Medio::all();
 
         return view('cotizaciones',[
@@ -315,8 +309,9 @@ class CotizacionesController extends Controller
             'facultades' => $facultades,
             'carreras' => $carreras,
             'profesiones' => $profesiones,
-            'tipos_cotizacion' => $tipo_cotizacion,
+            'tipos_cotizacion' => $tipos_cotizacion,
             'modalidades' => $modalidades,
+            'posgrados' => $posgrados,
             'medios' => $medios
         ]);
 
